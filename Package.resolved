@@ -1,0 +1,88 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire",
+        "state": {
+          "branch": null,
+          "revision": "eaf6e622dd41b07b251d8f01752eab31bc811493",
+          "version": "5.4.1"
+        }
+      },
+      {
+        "package": "Ampersand",
+        "repositoryURL": "https://github.com/darjeelingsteve/Ampersand",
+        "state": {
+          "branch": null,
+          "revision": "9498afe66ef14428c80647a4b1046c9aab97655a",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "package": "ATAConfiguration",
+        "repositoryURL": "https://github.com/jerometonnelier/ATAConfiguration",
+        "state": {
+          "branch": "master",
+          "revision": "0c1bb6372ec4b9fca70ea96d406cfe958fd786fc",
+          "version": null
+        }
+      },
+      {
+        "package": "KExtensions",
+        "repositoryURL": "https://github.com/jerometonnelier/KExtensions",
+        "state": {
+          "branch": "master",
+          "revision": "9b61ccc0bca5430f020503e361daa5258ae37e9d",
+          "version": null
+        }
+      },
+      {
+        "package": "KStorage",
+        "repositoryURL": "https://github.com/jerometonnelier/KStorage",
+        "state": {
+          "branch": null,
+          "revision": "330de84d7b9601468a842c099c7627069ab92016",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "NSAttributedStringBuilder",
+        "repositoryURL": "https://github.com/ethanhuang13/NSAttributedStringBuilder",
+        "state": {
+          "branch": null,
+          "revision": "4a3b02b8b4baf531490e1ddae8ed4a667bdb12b5",
+          "version": "0.3.3"
+        }
+      },
+      {
+        "package": "Nuke",
+        "repositoryURL": "https://github.com/kean/Nuke",
+        "state": {
+          "branch": null,
+          "revision": "e2eb1b7b82983c6f6a2df496e850406a78cdef05",
+          "version": "9.3.0"
+        }
+      },
+      {
+        "package": "PromiseKit",
+        "repositoryURL": "https://github.com/mxcl/PromiseKit",
+        "state": {
+          "branch": null,
+          "revision": "aea48ea1855f5d82e2dffa6027afce3aab8f3dd7",
+          "version": "6.13.3"
+        }
+      },
+      {
+        "package": "SnapKit",
+        "repositoryURL": "https://github.com/SnapKit/SnapKit",
+        "state": {
+          "branch": null,
+          "revision": "d458564516e5676af9c70b4f4b2a9178294f1bc6",
+          "version": "5.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
