@@ -31,6 +31,11 @@ public struct Address: Codable {
     public let address: String?
     public let coordinates: Coordinates
     
+    public init( address: String?,
+                 coordinates: Coordinates) {
+        self.address = address
+        self.coordinates = coordinates
+    }
     public var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
 }
 
@@ -160,13 +165,12 @@ public class RideProposal: CreateRide {
 public class CreateRide: BaseRide {
     public var vehicleType: VehicleType?
     public var passenger: Passenger?
-}
-
-public class OngoingRide: BaseRide {
-    public var vehicle: BaseVehicle!
-    public var passenger: Passenger!
     public var memo: String?
     public var reference: String?
+}
+
+public class OngoingRide: RideProposal {
+    public var vehicle: BaseVehicle!
 }
 
 public class RideHistoryModel: OngoingRide {
