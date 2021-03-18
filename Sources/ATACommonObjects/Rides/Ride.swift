@@ -17,34 +17,34 @@ extension String {
     }
 }
 
-struct Coordinates: Codable {
-    let latitude: Double
-    let longitude: Double
+public struct Coordinates: Codable {
+    public let latitude: Double
+    public let longitude: Double
     
-    init(location: CLLocationCoordinate2D) {
+    public init(location: CLLocationCoordinate2D) {
         latitude = location.latitude
         longitude = location.longitude
     }
 }
 
-struct Address: Codable {
-    let address: String?
-    let coordinates: Coordinates
+public struct Address: Codable {
+    public let address: String?
+    public let coordinates: Coordinates
     
-    var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
+    public var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
 }
 
-struct CancelRideReason {
-    let message: String
-    let code: Int
+public struct CancelRideReason {
+    public let message: String
+    public let code: Int
 }
 
-struct Rideoptions: Codable {
-    let numberOfPassengers: Int
-    let numberOfLuggages: Int
-    let vehicleType: VehicleType?
+public struct Rideoptions: Codable {
+    public let numberOfPassengers: Int
+    public let numberOfLuggages: Int
+    public let vehicleType: VehicleType?
     
-    init(numberOfPassengers: Int,
+    public init(numberOfPassengers: Int,
          numberOfLuggages: Int,
          vehicleType: VehicleType?) {
         self.numberOfLuggages = numberOfLuggages
@@ -58,7 +58,7 @@ struct Rideoptions: Codable {
         case vehicleType
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         //mandatory
         numberOfPassengers = try container.decodeIfPresent(Int.self, forKey: .numberOfPassengers) ?? 1
@@ -66,7 +66,7 @@ struct Rideoptions: Codable {
         vehicleType = try container.decodeIfPresent(VehicleType.self, forKey: .vehicleType)
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(numberOfLuggages, forKey: .numberOfLuggages)
         try container.encode(numberOfPassengers, forKey: .numberOfPassengers)
@@ -77,40 +77,48 @@ struct Rideoptions: Codable {
 
 
 // MARK: - BaseRide
-class BaseRide: NSObject, Codable {
-    static func == (lhs: BaseRide, rhs: BaseRide) -> Bool {
+public class BaseRide: NSObject, Codable {
+    public static func == (lhs: BaseRide, rhs: BaseRide) -> Bool {
         return lhs.hash == rhs.hash
     }
-    var id: Int = UUID().uuidString.hashValue
-    let date: CustomDate<ISODateFormatterDecodable>!
-    var isImmediate: Bool = true
-    let fromAddress: Address!
-    let toAddress: Address?
-    @DecodableDefault.EmptyList var vehicleOptions: [VehicleOption]
-    var origin: String = ""
-    var state: RideState = .pending
-    let numberOfPassengers: Int!
-    let numberOfLuggages: Int!
+    public var id: Int = UUID().uuidString.hashValue
+    public let date: CustomDate<ISODateFormatterDecodable>!
+    public var isImmediate: Bool = true
+    public let fromAddress: Address!
+    public let toAddress: Address?
+    @DecodableDefault.EmptyList public var vehicleOptions: [VehicleOption]
+    public var origin: String = ""
+    public var state: RideState = .pending
+    public let numberOfPassengers: Int!
+    public let numberOfLuggages: Int!
+    public var rideType: RideHistoryType? {
+        switch state {
+        case .booked: return .booked
+        case .cancelled: return .cancelled
+        case .ended: return .completed
+        default: return nil
+        }
+    }
     
-    override var hash: Int {
+    public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(id)
         return hasher.finalize()
     }
     
-    var username: String { "" }
-    var userIconURL: String? { nil }
+    public var username: String { "" }
+    public var userIconURL: String? { nil }
 }
 
 
-enum RideState: Int, Codable, CaseIterable, Comparable {
-    static func < (lhs: RideState, rhs: RideState) -> Bool {
+public enum RideState: Int, Codable, CaseIterable, Comparable {
+    public static func < (lhs: RideState, rhs: RideState) -> Bool {
         return lhs.rawValue < rhs.rawValue
     }
     
     case pending = 1, booked, started, approach, delayed, waiting, pickUpPassenger, pendingPayment, ended, cancelled
     
-    var displayText: String? {
+    public var displayText: String? {
         switch self {
         case .started: return "ride state started".bundleLocale()
         case .approach: return "ride state approach".bundleLocale()
@@ -123,7 +131,7 @@ enum RideState: Int, Codable, CaseIterable, Comparable {
         }
     }
     
-    var next: RideState? {
+    public var next: RideState? {
         switch self {
         case .pending: return nil
         case .booked: return .started
@@ -141,53 +149,84 @@ enum RideState: Int, Codable, CaseIterable, Comparable {
 
 // MARK: - New Ride
 // MARK: ride proposal for driver
-typealias Ride = RideProposal
-class RideProposal: CreateRide {
-    var validUntil: CustomDate<ISODateFormatterDecodable>!
+public typealias Ride = RideProposal
+public class RideProposal: CreateRide {
+    public var validUntil: CustomDate<ISODateFormatterDecodable>!
     // the date the ride has been received
-    let receivedDate: Date = Date()
-    @objc dynamic var progress: Double = 0.0
+    public let receivedDate: Date = Date()
+    @objc public dynamic var progress: Double = 0.0
 }
 
-class CreateRide: BaseRide {
-    var vehicleType: VehicleType?
-    var passenger: Passenger?
+public class CreateRide: BaseRide {
+    public var vehicleType: VehicleType?
+    public var passenger: Passenger?
 }
 
-class OngoingRide: BaseRide {
-    var vehicle: BaseVehicle!
-    var passenger: Passenger!
-    var memo: String?
-    var reference: String?
+public class OngoingRide: BaseRide {
+    public var vehicle: BaseVehicle!
+    public var passenger: Passenger!
+    public var memo: String?
+    public var reference: String?
 }
 
-class RideHistoryModel: OngoingRide {
-    var cancellationReason: String?
-    var pickUpAddress: Address?
-    var vatValue: Double?
-    var stats: [PendingPaymentRideData] = []
+public class RideHistoryModel: OngoingRide {
+    public var cancellationReason: String?
+    public var pickUpAddress: Address?
+    public var vatValue: Double?
+    public var stats: [PendingPaymentRideData] = []
+    public var priceDisplay: String? {
+        guard let amount = stats.filter({ $0.type == .amount }).first else { return nil }
+        return "\(amount.displayValue) \(amount.unit)"
+    }
 }
 
-struct PendingPaymentRideData: Codable {
-    var value: Double
-    var additionnalValue: Double? // used for VAT
-    let unit: String
-    let type: RideEndStat
-    var vatValue: Double?
-    var displayValue: String {
+public struct PendingPaymentRideData: Codable {
+    public var value: Double
+    public var additionnalValue: Double? // used for VAT
+    public let unit: String
+    public let type: RideEndStat
+    public var vatValue: Double?
+    public var displayValue: String {
         let hasDigits = value - Double(Int(value)) > 0
         return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? value : Int(value)))
     }
 }
 
-enum RideEndStat: Int, Codable {
+public enum RideEndStat: Int, Codable {
     case amount = 0, distance, time
     
-    var title: String {
+    public var title: String {
         switch self {
         case .amount: return "amount stat".bundleLocale()
         case .distance: return "distance stat".bundleLocale()
         case .time: return "time stat".bundleLocale()
+        }
+    }
+}
+
+public enum RideHistoryType: Int, CaseIterable, Comparable {
+    public static func < (lhs: RideHistoryType, rhs: RideHistoryType) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+    
+    case booked = 0, completed, cancelled
+    public var canCancel: Bool {
+        return self == .booked
+    }
+    
+    public var title: String {
+        switch self {
+        case .booked: return "booked".bundleLocale().uppercased()
+        case .completed: return "completed".bundleLocale().uppercased()
+        case .cancelled: return "cancelled".bundleLocale().uppercased()
+        }
+    }
+    
+    public var subtitle: String {
+        switch self {
+        case .booked: return "booked subtitle".bundleLocale().uppercased()
+        case .completed: return "completed subtitle".bundleLocale().uppercased()
+        case .cancelled: return "cancelled subtitle".bundleLocale().uppercased()
         }
     }
 }

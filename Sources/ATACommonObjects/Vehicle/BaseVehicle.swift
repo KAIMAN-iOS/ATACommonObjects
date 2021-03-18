@@ -18,8 +18,8 @@ extension Array where Element == BaseVehicle {
     }
 }
 
-struct BaseVehicle: Codable, Hashable {
-    static func == (lhs: BaseVehicle, rhs: BaseVehicle) -> Bool {
+open class BaseVehicle: Codable, Hashable {
+    public static func == (lhs: BaseVehicle, rhs: BaseVehicle) -> Bool {
         let retVal = lhs.id == rhs.id &&
             lhs.brand == rhs.brand &&
             lhs.model == rhs.model &&
@@ -30,29 +30,29 @@ struct BaseVehicle: Codable, Hashable {
         return retVal
     }
     
-    var id: String
-    var brand: VehicleBrand? = VehicleBrand.allCases.first
-    var model: String
-    var vehicleType: VehicleType? = VehicleType.allCases.first
-    var color: VehicleColor? = VehicleColor.allCases.first
-    var plate: String
-    var numberOfSeats: Int = 4
-    var isCurrentVehicle: Bool
-    @DecodableDefault.False var isValidated: Bool
-    var longDescription: String {
+    public var id: String
+    public var brand: VehicleBrand? = VehicleBrand.allCases.first
+    public var model: String
+    public var vehicleType: VehicleType? = VehicleType.allCases.first
+    public var color: VehicleColor? = VehicleColor.allCases.first
+    public var plate: String
+    public var numberOfSeats: Int = 4
+    public var isCurrentVehicle: Bool
+    @DecodableDefault.False public var isValidated: Bool
+    public var longDescription: String {
         "\(model) (\(color?.displayText ?? "")) - \(plate)"
      }
-    var isMedical: Bool { activeOptions.contains(.cpam) }
-    @DecodableDefault.EmptyList var activeOptions: [VehicleOption]
+    public var isMedical: Bool { activeOptions.contains(.cpam) }
+    @DecodableDefault.EmptyList public var activeOptions: [VehicleOption]
     
-    func hash(into hasher: inout Hasher) {
+    open func hash(into hasher: inout Hasher) {
 //        print("👺 hash \(model)/\(id)")
         hasher.combine(id)
 //        hasher.combine(model)
 //        hasher.combine(color)
     }
     
-    var allFieldsSet: Bool {
+    open var allFieldsSet: Bool {
         return brand != nil &&
             vehicleType != nil &&
             model.isEmpty == false &&
@@ -60,14 +60,14 @@ struct BaseVehicle: Codable, Hashable {
             plate.isEmpty == false
     }
     
-    init() {
+    public init() {
         id = ""
         model = ""
         plate = ""
         isCurrentVehicle = false
     }
     
-    var multipartData: MultipartFormData {
+    open var multipartData: MultipartFormData {
         let data = MultipartFormData()
         try? data.encode(id, for: "id")
         try? data.encode(brand, for: "brand")
@@ -82,7 +82,7 @@ struct BaseVehicle: Codable, Hashable {
     }
 }
 
-enum VehicleColor: String, Codable, CaseIterable {
+public enum VehicleColor: String, Codable, CaseIterable {
     case white = "WHITE"
     case black = "BLACK"
     case blue = "BLUE"
@@ -94,19 +94,19 @@ enum VehicleColor: String, Codable, CaseIterable {
     case brown = "BROWN"
     case other = "OTHER"
     
-    static func from(rawValue: String) -> VehicleColor {
+    public static func from(rawValue: String) -> VehicleColor {
         return self.init(rawValue: rawValue.uppercased()) ?? .other
     }
     
-    var displayText: String {
+    public var displayText: String {
         return "\(rawValue) COLOUR".bundleLocale().uppercased()
     }
 }
 
-enum VehicleType: Int, Codable, CaseIterable {
+public enum VehicleType: Int, Codable, CaseIterable {
     case berline = 1, green, prestige, van
     
-    var displayValue: String {
+    public var displayValue: String {
         switch self {
         case .berline: return "BERLINE".bundleLocale()
         case .green: return "GREEN".bundleLocale()
@@ -115,20 +115,20 @@ enum VehicleType: Int, Codable, CaseIterable {
         }
     }
     
-    var displayText: String { displayValue.uppercased() }
-    static func from(rawValue: Int) -> VehicleType { VehicleType.allCases.filter({ $0.rawValue == rawValue }).first ?? .berline }
-    init?(rawValue: Int) {
+    public var displayText: String { displayValue.uppercased() }
+    public static func from(rawValue: Int) -> VehicleType { VehicleType.allCases.filter({ $0.rawValue == rawValue }).first ?? .berline }
+    public init?(rawValue: Int) {
         self = VehicleType.from(rawValue: rawValue)
     }
 }
 
-enum VehicleBrand: String, Codable, CaseIterable, Comparable {
-    static func < (lhs: VehicleBrand, rhs: VehicleBrand) -> Bool {
+public enum VehicleBrand: String, Codable, CaseIterable, Comparable {
+    public static func < (lhs: VehicleBrand, rhs: VehicleBrand) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
     
-    static var separator: String = "---"
-    static var displayAllCases: [String] {
+    public static var separator: String = "---"
+    public static var displayAllCases: [String] {
         VehicleBrand.mainBrands.compactMap({ $0.displayText })
             + [VehicleBrand.separator]
             + VehicleBrand.otherBrands.compactMap({ $0.displayText })
@@ -175,14 +175,14 @@ enum VehicleBrand: String, Codable, CaseIterable, Comparable {
     case volvo = "VOLVO"
     case other = "OTHER"
     
-    var displayText: String {
+    public var displayText: String {
         switch self {
         case .other: return "Vehicle other".bundleLocale().uppercased()
         default: return rawValue.uppercased()
         }
     }
     
-    static func brand(at index: Int) -> VehicleBrand? {
+    public static func brand(at index: Int) -> VehicleBrand? {
         if index < VehicleBrand.mainBrands.count {
             return VehicleBrand.mainBrands[index]
         }
@@ -192,7 +192,7 @@ enum VehicleBrand: String, Codable, CaseIterable, Comparable {
         return VehicleBrand.otherBrands[index - VehicleBrand.mainBrands.count - 1]
     }
     
-    static func index(of brand: VehicleBrand?) -> Int? {
+    public static func index(of brand: VehicleBrand?) -> Int? {
         guard let brand = brand else { return nil }
         if let index =  VehicleBrand.mainBrands.firstIndex(of: brand) {
             return index
@@ -210,18 +210,18 @@ enum VehicleBrand: String, Codable, CaseIterable, Comparable {
         }
     }
     
-    static func from(rawValue: String) -> VehicleBrand {
+    public static func from(rawValue: String) -> VehicleBrand {
         return self.init(rawValue: rawValue.uppercased()) ?? .other
     }
     
-    static var mainBrands: [VehicleBrand] { VehicleBrand.allCases.filter({ $0.isMainBrand }).sorted() }
-    static var otherBrands: [VehicleBrand] { VehicleBrand.allCases.filter({ $0.isMainBrand == false }).sorted().filter({ $0 != .other }) + [.other] }
+    public static var mainBrands: [VehicleBrand] { VehicleBrand.allCases.filter({ $0.isMainBrand }).sorted() }
+    public static var otherBrands: [VehicleBrand] { VehicleBrand.allCases.filter({ $0.isMainBrand == false }).sorted().filter({ $0 != .other }) + [.other] }
 }
 
-enum VehicleOption: Int, CaseIterable, Codable {
+public enum VehicleOption: Int, CaseIterable, Codable {
     case cpam = 1, covidShield, englishSpoken, mkids1, mkids2, mkids3, mkids4, pets, access
     
-    var title: String {
+    public var title: String {
         switch self {
         case .cpam: return "cpam option".bundleLocale()
         case .covidShield: return "covidShield option".bundleLocale()
@@ -232,6 +232,20 @@ enum VehicleOption: Int, CaseIterable, Codable {
         case .mkids4: return "mkids4 option".bundleLocale()
         case .pets: return "pets option".bundleLocale()
         case .access: return "access option".bundleLocale()
+        }
+    }
+    
+    public var displayText: String {
+        switch self {
+        case .cpam: return "cpam option display".bundleLocale()
+        case .covidShield: return "covidShield option display".bundleLocale()
+        case .englishSpoken: return "englishSpoken option display".bundleLocale()
+        case .mkids1: return "mkids1 option display".bundleLocale()
+        case .mkids2: return "mkids2 option display".bundleLocale()
+        case .mkids3: return "mkids3 option display".bundleLocale()
+        case .mkids4: return "mkids4 option display".bundleLocale()
+        case .pets: return "pets option display".bundleLocale()
+        case .access: return "access option display".bundleLocale()
         }
     }
 }

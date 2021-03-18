@@ -7,18 +7,18 @@
 
 import UIKit
 
-extension Bundle {
+public extension Bundle {
     var appVersion: String {
         "\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "").\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "")"
     }
 }
 
-struct ContactModel: Encodable {
-    let text: String
-    let appVersion: String = Bundle.main.appVersion
-    let systemVersion: String = UIDevice.current.systemVersion
+public struct ContactModel: Encodable {
+    public let text: String
+    public let appVersion: String = Bundle.main.appVersion
+    public let systemVersion: String = UIDevice.current.systemVersion
     
-    init(text: String) {
+    public init(text: String) {
         self.text = text
     }
     
@@ -29,7 +29,7 @@ struct ContactModel: Encodable {
         case systemVersion
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(text, forKey: .text)
         try container.encode(appVersion, forKey: .appVersion)
@@ -37,11 +37,11 @@ struct ContactModel: Encodable {
     }
 }
 
-struct RideContactModel: Encodable {
-    let text: String
-    let rideId: Int
+public struct RideContactModel: Encodable {
+    public let text: String
+    public let rideId: Int
     
-    init(text: String, rideId: Int) {
+    public init(text: String, rideId: Int) {
         self.text = text
         self.rideId = rideId
     }
@@ -51,7 +51,7 @@ struct RideContactModel: Encodable {
         case rideId
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(text, forKey: .text)
         try container.encode(rideId, forKey: .rideId)
