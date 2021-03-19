@@ -12,12 +12,6 @@ import Ampersand
 import Alamofire
 import CodableExtension
 
-extension Array where Element == BaseVehicle {
-    var current: BaseVehicle? {
-        filter({ $0.isCurrentVehicle }).first
-    }
-}
-
 open class BaseVehicle: Codable, Hashable {
     public static func == (lhs: BaseVehicle, rhs: BaseVehicle) -> Bool {
         let retVal = lhs.id == rhs.id &&
@@ -37,7 +31,6 @@ open class BaseVehicle: Codable, Hashable {
     public var color: VehicleColor? = VehicleColor.allCases.first
     public var plate: String
     public var numberOfSeats: Int = 4
-    public var isCurrentVehicle: Bool
     @DecodableDefault.False public var isValidated: Bool
     public var longDescription: String {
         "\(model) (\(color?.displayText ?? "")) - \(plate)"
@@ -64,7 +57,6 @@ open class BaseVehicle: Codable, Hashable {
         id = ""
         model = ""
         plate = ""
-        isCurrentVehicle = false
     }
     
     open var multipartData: MultipartFormData {
@@ -77,7 +69,6 @@ open class BaseVehicle: Codable, Hashable {
         try? data.encode(plate, for: "plate")
         try? data.encode(isMedical, for: "isMedical")
         try? data.encode(numberOfSeats, for: "numberOfSeats")
-        try? data.encode(isCurrentVehicle, for: "isCurrentVehicle")
         return data
     }
 }

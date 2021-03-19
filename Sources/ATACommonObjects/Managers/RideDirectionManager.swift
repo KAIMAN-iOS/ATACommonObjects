@@ -66,7 +66,7 @@ public class RideDirectionManager {
     private var isLocationActive: Bool { SwiftLocation.authorizationStatus == .authorizedWhenInUse || SwiftLocation.authorizationStatus == .authorizedAlways }
     private var loadQueue: DispatchQueue = DispatchQueue(label: "LoadRoutes", qos: .default)
     
-    public func loadDirections(for ride: BaseRide, completion: @escaping RouteCompletion) {
+    public func loadDirections<T: BaseRide>(for ride: T, completion: @escaping ((_ ride: T, _ routes: [Route]) -> Void)) {
         guard isLocationActive else { return }
         DirectionManager
             .shared

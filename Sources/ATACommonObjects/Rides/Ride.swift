@@ -48,6 +48,7 @@ open class Address: NSObject, Codable {
                 coordinates: Coordinates) {
         self.address = address
         self.coordinates = coordinates
+        self.name = name
     }
     
     public init(name: String? = nil,
@@ -55,6 +56,7 @@ open class Address: NSObject, Codable {
                 coordinates: CLLocationCoordinate2D) {
         self.address = address
         self.coordinates = Coordinates(location: coordinates)
+        self.name = name
     }
     public var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
     public override var hash: Int {
