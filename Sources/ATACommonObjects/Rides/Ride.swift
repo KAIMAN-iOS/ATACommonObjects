@@ -111,7 +111,7 @@ public struct Rideoptions: Codable {
 
 
 // MARK: - BaseRide
-public class BaseRide: NSObject, Codable {
+open class BaseRide: NSObject, Codable {
     public static func == (lhs: BaseRide, rhs: BaseRide) -> Bool {
         return lhs.hash == rhs.hash
     }
@@ -204,7 +204,7 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
     }
 }
 
-public class CreateRide: BaseRide {
+open class CreateRide: BaseRide {
     public var vehicleType: VehicleType?
     public var passenger: Passenger?
     public var memo: String?
