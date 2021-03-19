@@ -118,7 +118,7 @@ open class BaseRide: NSObject, Codable {
         return lhs.hash == rhs.hash
     }
     public var id: Int = UUID().uuidString.hashValue
-    public var date: CustomDate<ISODateFormatterDecodable>!
+    public var startDate: CustomDate<ISODateFormatterDecodable>!
     public var isImmediate: Bool = true
     @objc dynamic public var fromAddress: Address!
     @objc dynamic public var toAddress: Address?
@@ -157,7 +157,7 @@ open class BaseRide: NSObject, Codable {
                 numberOfLuggages: Int) {
         self.init()
         self.id = id
-        self.date = CustomDate<ISODateFormatterDecodable>(date: date)
+        self.startDate = CustomDate<ISODateFormatterDecodable>(date: date)
         self.isImmediate = isImmediate
         self.fromAddress = fromAddress
         self.toAddress = toAddress

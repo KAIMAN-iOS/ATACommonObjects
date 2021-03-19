@@ -13,6 +13,7 @@ import Alamofire
 import CodableExtension
 
 open class BaseVehicle: Codable, Hashable {
+    static let newVehicle = "#>NewVehicle<#"
     public static func == (lhs: BaseVehicle, rhs: BaseVehicle) -> Bool {
         let retVal = lhs.id == rhs.id &&
             lhs.brand == rhs.brand &&
@@ -23,8 +24,8 @@ open class BaseVehicle: Codable, Hashable {
         print("👺 Equatable \(retVal) - \(lhs.model)/\(lhs.id) - \(rhs.model)/\(rhs.id) ")
         return retVal
     }
-    
-    public var id: String
+    public var isNew: Bool {  id == BaseVehicle.newVehicle }
+    public var id: String = BaseVehicle.newVehicle
     public var brand: VehicleBrand? = VehicleBrand.allCases.first
     public var model: String
     public var vehicleType: VehicleType? = VehicleType.allCases.first
