@@ -55,7 +55,7 @@ open class BaseVehicle: Codable, Hashable {
     }
     
     public init() {
-        id = ""
+        id = BaseVehicle.newVehicle
         model = ""
         plate = ""
     }
