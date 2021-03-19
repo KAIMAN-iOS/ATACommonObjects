@@ -39,13 +39,22 @@ open class Address: NSObject, Codable {
     public static func == (lhs: Address, rhs: Address) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
-    public let address: String?
-    public let coordinates: Coordinates
+    public var name: String?
+    public var address: String?
+    public var coordinates: Coordinates
     
-    public init( address: String?,
-                 coordinates: Coordinates) {
+    public init(name: String? = nil,
+                address: String? = nil,
+                coordinates: Coordinates) {
         self.address = address
         self.coordinates = coordinates
+    }
+    
+    public init(name: String? = nil,
+                address: String? = nil,
+                coordinates: CLLocationCoordinate2D) {
+        self.address = address
+        self.coordinates = Coordinates(location: coordinates)
     }
     public var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
     public override var hash: Int {
@@ -109,8 +118,8 @@ public class BaseRide: NSObject, Codable {
     public var id: Int = UUID().uuidString.hashValue
     public var date: CustomDate<ISODateFormatterDecodable>!
     public var isImmediate: Bool = true
-    public var fromAddress: Address!
-    public var toAddress: Address?
+    @objc dynamic public var fromAddress: Address!
+    @objc dynamic public var toAddress: Address?
     @DecodableDefault.EmptyList public var vehicleOptions: [VehicleOption]
     public var origin: String = ""
     public var state: RideState = .pending
