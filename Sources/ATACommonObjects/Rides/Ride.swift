@@ -122,7 +122,7 @@ open class BaseRide: NSObject, Codable {
     public var isImmediate: Bool = true
     @objc dynamic public var fromAddress: Address!
     @objc dynamic public var toAddress: Address?
-    @DecodableDefault.EmptyList public var vehicleOptions: [VehicleOption]
+    public var vehicleOptions: [VehicleOption] = []
     public var origin: String = ""
     public var state: RideState = .pending
     public var numberOfPassengers: Int!

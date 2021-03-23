@@ -32,12 +32,12 @@ open class BaseVehicle: Codable, Hashable {
     public var color: VehicleColor? = VehicleColor.allCases.first
     public var plate: String
     public var numberOfSeats: Int = 4
-    @DecodableDefault.False public var isValidated: Bool
+    public var isValidated: Bool = false
     public var longDescription: String {
         "\(model) (\(color?.displayText ?? "")) - \(plate)"
      }
     public var isMedical: Bool { activeOptions.contains(.cpam) }
-    @DecodableDefault.EmptyList public var activeOptions: [VehicleOption]
+    public var activeOptions: [VehicleOption] = []
     
     open func hash(into hasher: inout Hasher) {
 //        print("👺 hash \(model)/\(id)")
@@ -58,6 +58,35 @@ open class BaseVehicle: Codable, Hashable {
         id = BaseVehicle.newVehicle
         model = ""
         plate = ""
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, brand, model, vehicleType, color, plate, numberOfSeats, activeOptions
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        //mandatory
+        id = try container.decode(String.self, forKey: .id)
+        brand = try container.decode(VehicleBrand.self, forKey: .brand)
+        model = try container.decode(String.self, forKey: .model)
+        color = try container.decode(VehicleColor.self, forKey: .color)
+        vehicleType = try container.decode(VehicleType.self, forKey: .vehicleType)
+        plate = try container.decode(String.self, forKey: .plate)
+        numberOfSeats = try container.decode(Int.self, forKey: .numberOfSeats)
+        activeOptions = try container.decodeIfPresent([VehicleOption].self, forKey: .activeOptions) ?? []
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(brand, forKey: .brand)
+        try container.encode(model, forKey: .model)
+        try container.encode(color, forKey: .color)
+        try container.encode(vehicleType, forKey: .vehicleType)
+        try container.encode(plate, forKey: .plate)
+        try container.encode(numberOfSeats, forKey: .numberOfSeats)
+        try container.encode(activeOptions, forKey: .activeOptions)
     }
     
     open var multipartData: MultipartFormData {
