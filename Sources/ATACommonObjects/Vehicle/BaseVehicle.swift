@@ -61,7 +61,7 @@ open class BaseVehicle: Codable, Hashable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, brand, model, vehicleType, color, plate, numberOfSeats, activeOptions
+        case id, brand, model, vehicleType, color, plate, numberOfSeats, activeOptions, isValidated
     }
     
     public required init(from decoder: Decoder) throws {
@@ -75,6 +75,7 @@ open class BaseVehicle: Codable, Hashable {
         plate = try container.decode(String.self, forKey: .plate)
         numberOfSeats = try container.decode(Int.self, forKey: .numberOfSeats)
         activeOptions = try container.decodeIfPresent([VehicleOption].self, forKey: .activeOptions) ?? []
+        isValidated = try container.decodeIfPresent(Bool.self, forKey: .isValidated) ?? false
     }
     
     open func encode(to encoder: Encoder) throws {
@@ -87,6 +88,7 @@ open class BaseVehicle: Codable, Hashable {
         try container.encode(plate, forKey: .plate)
         try container.encode(numberOfSeats, forKey: .numberOfSeats)
         try container.encode(activeOptions, forKey: .activeOptions)
+        try container.encode(isValidated, forKey: .isValidated)
     }
     
     open var multipartData: MultipartFormData {
