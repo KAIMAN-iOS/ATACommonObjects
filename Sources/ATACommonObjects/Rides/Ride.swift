@@ -122,8 +122,8 @@ open class BaseRide: NSObject, Codable {
     public var isImmediate: Bool = true
     @objc dynamic public var fromAddress: Address!
     @objc dynamic public var toAddress: Address?
-    public var vehicleOptions: [VehicleOption] = []
-    public var origin: String = ""
+    @DecodableDefault.EmptyList public var vehicleOptions: [VehicleOption]
+    public var origin: Int = 0
     public var state: RideState = .pending
     public var numberOfPassengers: Int!
     public var numberOfLuggages: Int!
@@ -151,7 +151,7 @@ open class BaseRide: NSObject, Codable {
                 fromAddress: Address,
                 toAddress: Address?,
                 vehicleOptions: [VehicleOption] = [],
-                origin: String = "",
+                origin: Int = 0,
                 state: RideState = .pending,
                 numberOfPassengers: Int,
                 numberOfLuggages: Int) {
@@ -218,7 +218,7 @@ open class CreateRide: BaseRide {
                 fromAddress: Address,
                 toAddress: Address?,
                 vehicleOptions: [VehicleOption] = [],
-                origin: String = "",
+                origin: Int = 0,
                 state: RideState = .pending,
                 numberOfPassengers: Int,
                 numberOfLuggages: Int,
@@ -258,7 +258,7 @@ public class RideProposal: CreateRide {
                 fromAddress: Address,
                 toAddress: Address?,
                 vehicleOptions: [VehicleOption] = [],
-                origin: String = "",
+                origin: Int = 0,
                 state: RideState = .pending,
                 numberOfPassengers: Int,
                 numberOfLuggages: Int,
@@ -294,7 +294,7 @@ public class OngoingRide: RideProposal {
                 fromAddress: Address,
                 toAddress: Address?,
                 vehicleOptions: [VehicleOption] = [],
-                origin: String = "",
+                origin: Int = 0,
                 state: RideState = .pending,
                 numberOfPassengers: Int,
                 numberOfLuggages: Int,
@@ -325,7 +325,7 @@ public class RideHistoryModel: OngoingRide {
     public var cancellationReason: String?
     public var pickUpAddress: Address?
     public var vatValue: Double?
-    public var stats: [PendingPaymentRideData] = []
+    @DecodableDefault.EmptyList public var stats: [PendingPaymentRideData]
     public var priceDisplay: String? {
         guard let amount = stats.filter({ $0.type == .amount }).first else { return nil }
         return "\(amount.displayValue) \(amount.unit)"
@@ -337,7 +337,7 @@ public class RideHistoryModel: OngoingRide {
                 fromAddress: Address,
                 toAddress: Address?,
                 vehicleOptions: [VehicleOption] = [],
-                origin: String = "",
+                origin: Int = 0,
                 state: RideState = .pending,
                 numberOfPassengers: Int,
                 numberOfLuggages: Int,
