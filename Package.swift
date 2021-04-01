@@ -18,12 +18,13 @@ let package = Package(
         .package(url: "https://github.com/jerometonnelier/KExtensions", .branch("master")),
         .package(url: "https://github.com/jerometonnelier/ATAConfiguration", .branch("master")),
         .package(url: "https://github.com/malcommac/SwiftLocation", from: "5.1.0"),
+        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "3.3.3"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "ATACommonObjects",
-            dependencies: ["KExtensions", "ATAConfiguration", "SwiftLocation"]),
+            dependencies: ["KExtensions", "ATAConfiguration", "SwiftLocation", "PhoneNumberKit"]),
     ]
 )

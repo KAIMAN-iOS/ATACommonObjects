@@ -67,7 +67,13 @@ open class BaseVehicle: Codable, Hashable {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         //mandatory
-        id = try container.decode(String.self, forKey: .id)
+        if let id: String = try? container.decodeIfPresent(String.self, forKey: .id) {
+            self.id = id
+        } else if let id: Int = try? container.decodeIfPresent(Int.self, forKey: .id) {
+            self.id = "\(id)"
+        } else {
+            throw DecodingError.keyNotFound(CodingKeys.id, DecodingError.Context(codingPath: [CodingKeys.id], debugDescription: "id key missing"))
+        }
         brand = try container.decode(VehicleBrand.self, forKey: .brand)
         model = try container.decode(String.self, forKey: .model)
         color = try container.decode(VehicleColor.self, forKey: .color)
