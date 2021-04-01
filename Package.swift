@@ -18,7 +18,7 @@ let package = Package(
         .package(url: "https://github.com/jerometonnelier/KExtensions", .branch("master")),
         .package(url: "https://github.com/jerometonnelier/ATAConfiguration", .branch("master")),
         .package(url: "https://github.com/malcommac/SwiftLocation", from: "5.1.0"),
-        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "3.3.3"),
+        .package(url: "https://github.com/jerometonnelier/PhoneNumberKit", from: "4.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
