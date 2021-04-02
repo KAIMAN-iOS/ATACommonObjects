@@ -9,9 +9,9 @@ import Foundation
 import PhoneNumberKit
 
 public class BaseUser: Codable {
-    static let numberKit = PhoneNumberKit()
-    static let numberFormatter = PhoneNumberFormatter()
-    var phoneFormatter: PartialFormatter  {
+    public static let numberKit = PhoneNumberKit()
+    public static let numberFormatter = PhoneNumberFormatter()
+    public var phoneFormatter: PartialFormatter  {
         let formatter = PartialFormatter()
         formatter.defaultRegion = countryCode
         return formatter
@@ -25,29 +25,35 @@ public class BaseUser: Codable {
         return try? BaseUser.numberKit.parse(phoneNumber)
     }
     
-    var countryCode: String {
+    public var countryCode: String = "FR" {
         didSet {
             BaseUser.numberFormatter.defaultRegion = countryCode
         }
     }
-    var hasValidNumber: Bool {
+    public var hasValidNumber: Bool {
         return BaseUser.numberKit.isValidPhoneNumber(phoneNumber, withRegion: countryCode, ignoreType: false)
     }
-    var id: Int
-    var firstname: String
-    var lastname: String
-    var fullname: String { firstname + " " + lastname }
+    public var id: Int = UUID().uuidString.hash
+    public var firstname: String = ""
+    public var lastname: String = ""
+    public var fullname: String { firstname + " " + lastname }
     // phone number with natinal format
-    var phoneNumber: String
-    var imageUrl: URL?
-    let chatId: String
+    public var phoneNumber: String = ""
+    public var imageUrl: String?
+    public var chatId: String = ""
+    
+    public init() {
+    }
 }
 
 public class BaseDriver: BaseUser {
-    var overallRating: Double!
-    var driverRating: Double!
-    var carRating: Double!
+    public var overallRating: Double!
+    public var driverRating: Double!
+    public var carRating: Double!
+    
+    public static var `default` = BaseDriver()
 }
 
 public class BasePassenger: BaseUser {
+    public static var `default` = BasePassenger()
 }

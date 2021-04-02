@@ -80,6 +80,11 @@ public class SearchOptions: NSObject, Codable {
     public var vehicleType: VehicleType?
     public var memo: String?
     public var reference: String?
+    static var `default` = SearchOptions()
+    
+    override init() {
+        
+    }
     
     enum CodingKeys: String, CodingKey {
         case vehicleOptions, vehicleType, memo, reference
@@ -158,6 +163,11 @@ public class Proposal: NSObject, Codable {
     public var saveForMe: Bool?
     public var shareGroups: [String] = []
     
+    public init(saveForMe: Bool, shareGroups: [String]) {
+        self.saveForMe = saveForMe
+        self.shareGroups = shareGroups
+    }
+    
     enum CodingKeys: String, CodingKey {
         case saveForMe, shareGroups
     }
@@ -207,6 +217,8 @@ open class BaseRide: NSObject, Codable {
     override init() {
         super.init()
     }
+    static var `default` = BaseRide()
+    
     
     public convenience init(id: Int,
                 date: Date,
@@ -309,12 +321,18 @@ open class CreateRide: Codable, RideContainable {
     public var ride: BaseRide
     public var options: SearchOptions
     public var passenger: BasePassenger?
+    
+    public init() {
+        ride = BaseRide.default
+        options = SearchOptions.default
+        passenger = BasePassenger.default
+    }
 }
 
 // MARK: - New Ride
 // MARK: ride proposal for driver
 public typealias Ride = RideProposal
-public class RideProposal: Codable, RideContainable, Hashable {
+public class RideProposal: NSObject, Codable, RideContainable {
     public var ride: BaseRide
     public var options: SearchOptions
     public var passenger: BasePassenger?
@@ -323,8 +341,10 @@ public class RideProposal: Codable, RideContainable, Hashable {
     public let receivedDate: Date = Date()
     @objc public dynamic var progress: Double = 0.0
     
-    public func hash(into hasher: inout Hasher) {
+    public override var hash: Int {
+        var hasher = Hasher()
         hasher.combine(ride)
+        return hasher.finalize()
     }
     public static func == (lhs: RideProposal, rhs: RideProposal) -> Bool {
         return lhs.hashValue == rhs.hashValue
@@ -335,6 +355,7 @@ public class OngoingRide: Codable, RideContainable {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
+    public var options: SearchOptions
 }
 
 public class RideHistoryModel: Codable, RideContainable {
