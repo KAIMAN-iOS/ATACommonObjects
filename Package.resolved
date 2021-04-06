@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Alamofire/Alamofire",
         "state": {
           "branch": null,
-          "revision": "eaf6e622dd41b07b251d8f01752eab31bc811493",
-          "version": "5.4.1"
+          "revision": "4d19ad82f80cc71ff829b941ded114c56f4f604c",
+          "version": "5.4.2"
         }
       },
       {
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/jerometonnelier/ATAConfiguration",
         "state": {
           "branch": "master",
-          "revision": "0c1bb6372ec4b9fca70ea96d406cfe958fd786fc",
+          "revision": "d4b2dbcc96550102fd5222bbfeebf62a6d72e60d",
           "version": null
         }
       },
@@ -33,7 +33,7 @@
         "repositoryURL": "https://github.com/jerometonnelier/KExtensions",
         "state": {
           "branch": "master",
-          "revision": "9b61ccc0bca5430f020503e361daa5258ae37e9d",
+          "revision": "da55b7dc677e69f9decf078a682b0f2a002e4464",
           "version": null
         }
       },
@@ -60,17 +60,17 @@
         "repositoryURL": "https://github.com/kean/Nuke",
         "state": {
           "branch": null,
-          "revision": "e2eb1b7b82983c6f6a2df496e850406a78cdef05",
-          "version": "9.3.0"
+          "revision": "200016df418ed8dc70ba918d52c29634f434541c",
+          "version": "9.5.0"
         }
       },
       {
         "package": "PhoneNumberKit",
-        "repositoryURL": "https://github.com/marmelroy/PhoneNumberKit",
+        "repositoryURL": "https://github.com/jerometonnelier/PhoneNumberKit",
         "state": {
           "branch": null,
-          "revision": "1ef0431b971f69c48ca5eb4cdba07f2c5da54c35",
-          "version": "3.3.3"
+          "revision": "d73665b4ae26aa57245bd4fdc5b6bab7a18033f3",
+          "version": "4.0.0"
         }
       },
       {
