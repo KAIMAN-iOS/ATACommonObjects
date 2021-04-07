@@ -7,8 +7,11 @@
 
 import Foundation
 import PhoneNumberKit
+import CodableExtension
+import BackedCodable
 
-public class BaseUser: Codable {
+public class BaseUser: BackedDecodable, Encodable {
+    required public init(_:DeferredDecoder) {}
     public static let numberKit = PhoneNumberKit()
     public static let numberFormatter = PhoneNumberFormatter()
     public var phoneFormatter: PartialFormatter  {
@@ -25,11 +28,16 @@ public class BaseUser: Codable {
         return try? BaseUser.numberKit.parse(phoneNumber)
     }
     
-    public var countryCode: String = "FR" {
+    @Backed(defaultValue: "FR")
+    public var countryCode: String {
         didSet {
             BaseUser.numberFormatter.defaultRegion = countryCode
         }
     }
+    private enum CodingKeys: String, CodingKey {
+            case id, firstname, lastname, phoneNumber, imageUrl, chatId
+        }
+    
     public var hasValidNumber: Bool {
         return BaseUser.numberKit.isValidPhoneNumber(phoneNumber, withRegion: countryCode, ignoreType: false)
     }

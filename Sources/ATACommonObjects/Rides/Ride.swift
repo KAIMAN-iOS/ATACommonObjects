@@ -341,6 +341,13 @@ public class RideProposal: NSObject, Codable, RideContainable {
     public let receivedDate: Date = Date()
     @objc public dynamic var progress: Double = 0.0
     
+    enum CodingKeys: String, CodingKey {
+        case ride
+        case options = "searchOptions"
+        case passenger
+        case validUntil
+    }
+    
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(ride)
@@ -356,6 +363,13 @@ public class OngoingRide: Codable, RideContainable {
     public var ride: BaseRide
     public var passenger: BasePassenger?
     public var options: SearchOptions
+    
+    enum CodingKeys: String, CodingKey {
+        case ride
+        case options = "searchOptions"
+        case passenger
+        case vehicle
+    }
 }
 
 public class RideHistoryModel: Codable, RideContainable {
