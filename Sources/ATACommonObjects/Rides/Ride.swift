@@ -62,6 +62,8 @@ open class Address: NSObject, Codable {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(coordinates)
+        hasher.combine(name)
+        hasher.combine(address)
         return hasher.finalize()
     }
 }
