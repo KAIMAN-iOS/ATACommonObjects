@@ -11,11 +11,13 @@ import ATAConfiguration
 
 public class RidePolyline: MKPolyline {
     public static var configuration: ATAConfiguration!
+    public static var approachColor: UIColor?
+    public static var rideColor: UIColor?
     public var routeType: Route.RouteType = .approach
     public var color: UIColor {
         switch routeType {
-        case .approach: return RidePolyline.configuration.palette.inactive
-        case .ride: return RidePolyline.configuration.palette.primary
+        case .approach: return RidePolyline.approachColor ?? RidePolyline.configuration.palette.inactive
+        case .ride: return RidePolyline.rideColor ?? RidePolyline.configuration.palette.primary
         }
     }
     public var lineDashPattern: [NSNumber]? {
