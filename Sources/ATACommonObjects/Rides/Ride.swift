@@ -33,11 +33,19 @@ public struct Coordinates: Codable, Hashable, Equatable {
         hasher.combine(latitude)
         hasher.combine(longitude)
     }
+    
+    public var asCoord2D: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
 }
 
 open class Address: NSObject, Codable {
     public static func == (lhs: Address, rhs: Address) -> Bool {
         return lhs.hashValue == rhs.hashValue
+    }
+    open override func isEqual(_ object: Any?) -> Bool {
+        guard let adress = object as? Address else { return false}
+        return self == adress
     }
     public var name: String?
     public var address: String?
@@ -59,7 +67,7 @@ open class Address: NSObject, Codable {
         self.name = name
     }
     public var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
-    public override var hash: Int {
+    open override var hash: Int {
         var hasher = Hasher()
         hasher.combine(coordinates)
         hasher.combine(name)

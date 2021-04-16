@@ -248,7 +248,15 @@ public enum VehicleBrand: String, Codable, CaseIterable, Comparable {
 }
 
 public enum VehicleOption: Int, CaseIterable, Codable {
-    case cpam = 1, covidShield, englishSpoken, mkids1, mkids2, mkids3, mkids4, pets, access
+    case cpam = 2,
+         covidShield = 4,
+         englishSpoken = 8,
+         mkids1 = 16,
+         mkids2 = 32,
+         mkids3 = 64,
+         mkids4 = 128,
+         pets = 256,
+         access = 512
     
     public var title: String {
         switch self {
