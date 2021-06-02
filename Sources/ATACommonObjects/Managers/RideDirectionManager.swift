@@ -62,6 +62,7 @@ public class RideDirectionManager {
     public static let shared: RideDirectionManager = RideDirectionManager()
     private var routes: [Ride: [Route]] = [:]
     private init() {}
+    private let geoCoder = CLGeocoder()
     
     private var isLocationActive: Bool { SwiftLocation.authorizationStatus == .authorizedWhenInUse || SwiftLocation.authorizationStatus == .authorizedAlways }
     private var loadQueue: DispatchQueue = DispatchQueue(label: "LoadRoutes", qos: .default)
@@ -77,5 +78,16 @@ public class RideDirectionManager {
             .catch { _ in
                 completion(ride, [])
             }
+    }
+    
+    public func geoCodeAddress(for location: CLLocationCoordinate2D, completion: @escaping ((CLPlacemark?) -> Void)) {
+        geoCoder.reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude)) { [weak self] placemarks, error in
+            guard error == nil,
+                  let placemark = placemarks?.first else {
+                completion(nil)
+                return
+            }
+            completion(placemark)
+        }
     }
 }
