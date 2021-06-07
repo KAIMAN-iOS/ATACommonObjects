@@ -101,6 +101,7 @@ open class BaseVehicle: Codable, Hashable {
         let data = MultipartFormData()
         try? data.encode(id, for: "id")
         try? data.encode(brand, for: "brand")
+        try? data.encode(isValidated, for: "isValidated")
         try? data.encode(model, for: "model")
         try? data.encode(color, for: "color")
         try? data.encode(vehicleType, for: "vehicleType")
