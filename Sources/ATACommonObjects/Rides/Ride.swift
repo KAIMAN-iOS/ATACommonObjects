@@ -201,7 +201,7 @@ open class BaseRide: NSObject, Codable {
         return lhs.hash == rhs.hash
     }
     public var id: Int = UUID().uuidString.hashValue
-    public var startDate: CustomDate<ISOMillisecondsDateFormatterDecodable>!
+    public var startDate: CustomDate<GMTISODateFormatterDecodable>!
     public var isImmediate: Bool = true
     @objc dynamic public var fromAddress: Address!
     @objc dynamic public var toAddress: Address?
@@ -241,7 +241,7 @@ open class BaseRide: NSObject, Codable {
                 numberOfLuggages: Int) {
         self.init()
         self.id = id
-        self.startDate = CustomDate<ISOMillisecondsDateFormatterDecodable>(date: date)
+        self.startDate = CustomDate<GMTISODateFormatterDecodable>(date: date)
         self.isImmediate = isImmediate
         self.fromAddress = fromAddress
         self.toAddress = toAddress
@@ -259,7 +259,7 @@ open class BaseRide: NSObject, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         do {
             id = try container.decode(Int.self, forKey: .id)
-            startDate = try container.decode(CustomDate<ISOMillisecondsDateFormatterDecodable>.self, forKey: .startDate)
+            startDate = try container.decode(CustomDate<GMTISODateFormatterDecodable>.self, forKey: .startDate)
             isImmediate = try container.decode(Bool.self, forKey: .isImmediate)
             fromAddress = try container.decode(Address.self, forKey: .fromAddress)
             toAddress = try container.decode(Address.self, forKey: .toAddress)
@@ -346,7 +346,7 @@ public class RideProposal: NSObject, Codable, RideContainable {
     public var ride: BaseRide
     public var options: SearchOptions
     public var passenger: BasePassenger?
-    public var validUntil: CustomDate<ISOMillisecondsDateFormatterDecodable>!
+    public var validUntil: CustomDate<GMTISODateFormatterDecodable>!
     // the date the ride has been received
     public let receivedDate: Date = Date()
     @objc public dynamic var progress: Double = 0.0
