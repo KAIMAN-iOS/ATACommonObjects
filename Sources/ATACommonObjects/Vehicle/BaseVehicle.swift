@@ -34,7 +34,10 @@ open class BaseVehicle: Codable, Hashable {
     public var numberOfSeats: Int = 4
     public var isValidated: Bool = false
     public var longDescription: String {
-        "\(model) (\(color?.displayText ?? "")) - \(plate)"
+        "\(mediumDescription) - \(plate)"
+     }
+    public var mediumDescription: String {
+        "\(model) (\(color?.displayText ?? ""))"
      }
     public var isMedical: Bool { activeOptions.contains(.cpam) }
     public var activeOptions: [VehicleOption] = []
