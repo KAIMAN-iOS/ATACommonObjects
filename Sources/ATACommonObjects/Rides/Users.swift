@@ -51,6 +51,7 @@ open class BaseUser: NSObject, Codable {
     public var fullname: String { firstname + " " + lastname }
     // phone number with natinal format
     public var phoneNumber: String = ""
+    public var chatId: String = ""
     public var imageUrl: String?
     public var image: UIImage? {
         didSet {
@@ -61,7 +62,6 @@ open class BaseUser: NSObject, Codable {
             imageUrl = url.absoluteString
         }
     }
-    public var chatId: String = ""
     
     public override init() {
     }
@@ -70,7 +70,7 @@ open class BaseUser: NSObject, Codable {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             //mandatory
-            id = try container.decode(Int.self, forKey: .id)
+            id = try container.decodeIfPresent(Int.self, forKey: .id) ?? UUID().uuidString.hash
             firstname = try container.decode(String.self, forKey: .firstname)
             lastname = try container.decode(String.self, forKey: .lastname)
             firstname = try container.decode(String.self, forKey: .firstname)
@@ -78,7 +78,7 @@ open class BaseUser: NSObject, Codable {
             imageUrl = try container.decodeIfPresent(String.self, forKey: .imageUrl)
             //optional
             // retrieve an internation string ans split it to countryCode and national number
-            let internationalNumber: String = try container.decode(String.self, forKey: .phoneNumber)
+            let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
             guard internationalNumber.isEmpty == false else {
                 countryCode = Locale.current.regionCode ?? "fr"
                 phoneNumber = ""
