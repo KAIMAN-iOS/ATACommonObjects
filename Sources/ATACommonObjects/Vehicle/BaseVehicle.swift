@@ -77,10 +77,13 @@ open class BaseVehicle: Codable, Hashable {
         } else {
             throw DecodingError.keyNotFound(CodingKeys.id, DecodingError.Context(codingPath: [CodingKeys.id], debugDescription: "id key missing"))
         }
-        brand = try container.decode(VehicleBrand.self, forKey: .brand)
+        let brand =  try container.decode(String.self, forKey: .brand)
+        self.brand = VehicleBrand.from(rawValue: brand)
         model = try container.decode(String.self, forKey: .model)
-        color = try container.decode(VehicleColor.self, forKey: .color)
-        vehicleType = try container.decode(VehicleType.self, forKey: .vehicleType)
+        let color = try container.decode(String.self, forKey: .color)
+        self.color = VehicleColor.from(rawValue: color)
+        let vehicleType = try container.decode(Int.self, forKey: .vehicleType)
+        self.vehicleType = VehicleType.from(rawValue: vehicleType)
         plate = try container.decode(String.self, forKey: .plate)
         numberOfSeats = try container.decode(Int.self, forKey: .numberOfSeats)
         activeOptions = try container.decodeIfPresent([VehicleOption].self, forKey: .activeOptions) ?? []
