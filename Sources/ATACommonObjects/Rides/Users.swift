@@ -52,6 +52,7 @@ open class BaseUser: NSObject, Codable {
     // phone number with natinal format
     public var phoneNumber: String = ""
     public var chatId: String = ""
+    public var displayName: String { firstname + " " + lastname }
     public var imageUrl: String?
     public var image: UIImage? {
         didSet {

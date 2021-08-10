@@ -50,6 +50,7 @@ open class Address: NSObject, Codable {
     public var name: String?
     public var address: String?
     public var coordinates: Coordinates
+    public var isValid: Bool { return CLLocationCoordinate2DIsValid(coordinates.asCoord2D) }
     
     public init(name: String? = nil,
                 address: String? = nil,
