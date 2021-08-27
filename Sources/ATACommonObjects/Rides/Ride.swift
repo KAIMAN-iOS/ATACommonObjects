@@ -47,6 +47,7 @@ open class Address: NSObject, Codable {
         guard let adress = object as? Address else { return false}
         return self == adress
     }
+    public var id: Int = UUID().uuidString.hash
     public var name: String?
     public var address: String?
     public var coordinates: Coordinates
@@ -73,6 +74,7 @@ open class Address: NSObject, Codable {
         hasher.combine(coordinates)
         hasher.combine(name)
         hasher.combine(address)
+        hasher.combine(id)
         return hasher.finalize()
     }
 }

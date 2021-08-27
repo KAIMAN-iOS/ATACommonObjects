@@ -33,13 +33,13 @@
         "repositoryURL": "https://github.com/KAIMAN-iOS/KExtensions",
         "state": {
           "branch": "master",
-          "revision": "4ff83a59c9e51088fd32804f493cd08f1e4b2b7d",
+          "revision": "629b5a7cc44c0d37e0b96db01371cc87965f57c2",
           "version": null
         }
       },
       {
         "package": "KStorage",
-        "repositoryURL": "https://github.com/jerometonnelier/KStorage",
+        "repositoryURL": "https://github.com/KAIMAN-iOS/KStorage",
         "state": {
           "branch": null,
           "revision": "330de84d7b9601468a842c099c7627069ab92016",
