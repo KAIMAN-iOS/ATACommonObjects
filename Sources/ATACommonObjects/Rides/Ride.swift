@@ -74,7 +74,7 @@ open class Address: NSObject, Codable {
         hasher.combine(coordinates)
         hasher.combine(name)
         hasher.combine(address)
-        hasher.combine(id)
+//        hasher.combine(id)
         return hasher.finalize()
     }
 }
