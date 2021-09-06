@@ -67,7 +67,7 @@ open class Address: NSObject, Codable {
         coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
     }
     
-    public func encode(to encoder: Encoder) throws {
+    open func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encode(address, forKey: .address)
