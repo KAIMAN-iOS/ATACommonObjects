@@ -61,16 +61,17 @@ open class Address: NSObject, Codable {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(Int.self, forKey: .id) ?? 0
-        name = try container.decode(String.self, forKey: .name)
-        address = try container.decode(String.self, forKey: .address)
+        let adr = try container.decodeIfPresent(String.self, forKey: .address) ?? "n/a"
+        address = adr
+        name = try container.decodeIfPresent(String.self, forKey: .name) ?? adr
         coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
     }
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(id, forKey: .id)
-        try container.encode(name, forKey: .name)
         try container.encode(address, forKey: .address)
+        try container.encodeIfPresent(name, forKey: .name)
         try container.encode(coordinates, forKey: .coordinates)
     }
     
