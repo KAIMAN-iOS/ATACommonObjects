@@ -47,11 +47,32 @@ open class Address: NSObject, Codable {
         guard let adress = object as? Address else { return false}
         return self == adress
     }
-    public var id: Int = UUID().uuidString.hash
+    public static let newId: Int = 98765432123456789
+    public var id: Int = Address.newId
     public var name: String?
     public var address: String?
     public var coordinates: Coordinates
     public var isValid: Bool { return CLLocationCoordinate2DIsValid(coordinates.asCoord2D) }
+    
+    enum CodingKeys: String, CodingKey {
+        case name, address, coordinates, id
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(Int.self, forKey: .id) ?? 0
+        name = try container.decode(String.self, forKey: .name)
+        address = try container.decode(String.self, forKey: .address)
+        coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(address, forKey: .address)
+        try container.encode(coordinates, forKey: .coordinates)
+    }
     
     public init(name: String? = nil,
                 address: String? = nil,
