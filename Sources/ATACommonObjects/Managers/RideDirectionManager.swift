@@ -10,6 +10,10 @@ import SwiftLocation
 import MapKit
 import MapExtension
 
+public enum RideSortCriteria {
+    case any, shortestDistance, shortestTime
+}
+
 public struct RideDirections: Directions {
     public var id: String { "\(ride.id)" }
     public var directions: [Direction] {
@@ -67,13 +71,19 @@ public class RideDirectionManager {
     private var isLocationActive: Bool { SwiftLocation.authorizationStatus == .authorizedWhenInUse || SwiftLocation.authorizationStatus == .authorizedAlways }
     private var loadQueue: DispatchQueue = DispatchQueue(label: "LoadRoutes", qos: .default)
     
-    public func loadDirections<T: BaseRide>(for ride: T, completion: @escaping ((_ ride: T, _ routes: [Route]) -> Void)) {
+    public func loadDirections<T: BaseRide>(for ride: T, sortCriteria: RideSortCriteria = .any, completion: @escaping ((_ ride: T, _ routes: [Route]) -> Void)) {
         guard isLocationActive else { return }
         DirectionManager
             .shared
             .loadDirections(for: RideDirections(ride: ride))
             .done { response in
-                completion(ride, response.routes)
+                var routes = response.routes
+                switch sortCriteria {
+                case .any: ()
+                case .shortestTime: routes.sort(by: { ($0.route?.expectedTravelTime ?? 0) < ($1.route?.expectedTravelTime ?? 0) })
+                case .shortestDistance: routes.sort(by: { ($0.route?.distance ?? 0) < ($1.route?.distance ?? 0) })
+                }
+                completion(ride, routes)
             }
             .catch { _ in
                 completion(ride, [])
@@ -81,7 +91,7 @@ public class RideDirectionManager {
     }
     
     public func geoCodeAddress(for location: CLLocationCoordinate2D, completion: @escaping ((CLPlacemark?) -> Void)) {
-        geoCoder.reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude)) { [weak self] placemarks, error in
+        geoCoder.reverseGeocodeLocation(CLLocation(latitude: location.latitude, longitude: location.longitude)) { placemarks, error in
             guard error == nil,
                   let placemark = placemarks?.first else {
                 completion(nil)
