@@ -357,6 +357,19 @@ open class CreateRide: Codable, RideContainable {
     public var options: SearchOptions
     public var passenger: BasePassenger?
     
+    enum CodingKeys: String, CodingKey {
+        case options = "searchOptions", ride, passenger
+    }
+    
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        //mandatory
+        ride = try container.decode(BaseRide.self, forKey: .ride)
+        options = try container.decode(SearchOptions.self, forKey: .options)
+        passenger = try container.decode(BasePassenger.self, forKey: .passenger)
+    }
+
+    
     public init() {
         ride = BaseRide.default
         options = SearchOptions.default
