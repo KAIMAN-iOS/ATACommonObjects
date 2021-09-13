@@ -370,10 +370,10 @@ open class CreateRide: Codable, RideContainable {
     }
 
     
-    public init() {
+    public init(passenger: BasePassenger? = nil) {
         ride = BaseRide.default
         options = SearchOptions.default
-        passenger = BasePassenger.default
+        self.passenger = passenger ?? BasePassenger.default
     }
 }
 
@@ -410,6 +410,7 @@ public class OngoingRide: Codable, RideContainable {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
+    public var driver: BaseDriver?
     public var options: SearchOptions
     
     enum CodingKeys: String, CodingKey {
@@ -417,6 +418,7 @@ public class OngoingRide: Codable, RideContainable {
         case options = "searchOptions"
         case passenger
         case vehicle
+        case driver
     }
 }
 
