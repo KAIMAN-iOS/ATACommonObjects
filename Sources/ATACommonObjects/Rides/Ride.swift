@@ -356,9 +356,10 @@ open class CreateRide: Codable, RideContainable {
     public var ride: BaseRide
     public var options: SearchOptions
     public var passenger: BasePassenger?
+    public var driver: BaseDriver?
     
     enum CodingKeys: String, CodingKey {
-        case options = "searchOptions", ride, passenger
+        case options = "searchOptions", ride, passenger, driver
     }
     
     required public init(from decoder: Decoder) throws {
@@ -367,6 +368,7 @@ open class CreateRide: Codable, RideContainable {
         ride = try container.decode(BaseRide.self, forKey: .ride)
         options = try container.decode(SearchOptions.self, forKey: .options)
         passenger = try container.decode(BasePassenger.self, forKey: .passenger)
+        driver = try container.decode(BaseDriver.self, forKey: .driver)
     }
 
     
