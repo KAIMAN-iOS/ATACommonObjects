@@ -34,7 +34,7 @@ open class BaseUser: NSObject, Codable {
         }
     }
     private enum CodingKeys: String, CodingKey {
-            case id, firstname, lastname, phoneNumber, imageUrl, chatId
+            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL
         }
     
     public var hasValidNumber: Bool {
@@ -76,7 +76,13 @@ open class BaseUser: NSObject, Codable {
             lastname = try container.decode(String.self, forKey: .lastname)
             firstname = try container.decode(String.self, forKey: .firstname)
             chatId = try container.decodeIfPresent(String.self, forKey: .chatId) ?? "In4p1PLFmcvZQffWpRpz" // In4p1PLFmcvZQffWpRpz is Julie in FireStore
-            imageUrl = try container.decodeIfPresent(String.self, forKey: .imageUrl)
+            if let url = try? container.decodeIfPresent(String.self, forKey: .imageUrl) {
+                imageUrl = url
+            } else if let url = try? container.decodeIfPresent(String.self, forKey: .imageURL) {
+                imageUrl = url
+            } else {
+                imageUrl = nil
+            }
             //optional
             // retrieve an internation string ans split it to countryCode and national number
             let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
