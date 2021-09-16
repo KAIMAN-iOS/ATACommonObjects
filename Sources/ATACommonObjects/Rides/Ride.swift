@@ -367,8 +367,8 @@ open class CreateRide: Codable, RideContainable {
         //mandatory
         ride = try container.decode(BaseRide.self, forKey: .ride)
         options = try container.decode(SearchOptions.self, forKey: .options)
-        passenger = try container.decode(BasePassenger.self, forKey: .passenger)
-        driver = try container.decode(BaseDriver.self, forKey: .driver)
+        passenger = try container.decodeIfPresent(BasePassenger.self, forKey: .passenger)
+        driver = try container.decodeIfPresent(BaseDriver.self, forKey: .driver)
     }
 
     
