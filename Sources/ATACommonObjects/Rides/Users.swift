@@ -89,6 +89,7 @@ open class BaseUser: NSObject, Codable {
                 imageUrl = nil
             }
             super.init()
+            self.image = ImageManager.fetchImage(with: "user")
             //optional
             // retrieve an internation string ans split it to countryCode and national number
             let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
@@ -150,7 +151,7 @@ open class BaseUser: NSObject, Codable {
     }
     
     func handleUserPicture() {
-        if let image = ImageManager.fetchImage(with: "user") {
+        if let image = self.image {
             picture.send(image)
         }
         
