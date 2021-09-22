@@ -41,9 +41,9 @@
         "package": "KStorage",
         "repositoryURL": "https://github.com/KAIMAN-iOS/KStorage",
         "state": {
-          "branch": null,
-          "revision": "330de84d7b9601468a842c099c7627069ab92016",
-          "version": "1.0.0"
+          "branch": "master",
+          "revision": "92390107f52b6215f15254cd3ad765c820c29cbc",
+          "version": null
         }
       },
       {

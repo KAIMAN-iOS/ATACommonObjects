@@ -428,6 +428,7 @@ public class RideHistoryModel: Codable, RideContainable {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
+    public var driver: BaseDriver?
     public var payment: Payment
     public var cancellationReason: String?
     public var pickUpAddress: Address?

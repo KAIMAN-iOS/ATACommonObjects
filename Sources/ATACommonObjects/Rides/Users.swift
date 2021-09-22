@@ -10,6 +10,7 @@ import PhoneNumberKit
 import CodableExtension
 import Alamofire
 import ImageExtension
+import Combine
 
 open class BaseUser: NSObject, Codable {
     public static let numberKit = PhoneNumberKit()
@@ -20,11 +21,11 @@ open class BaseUser: NSObject, Codable {
         return formatter
     }
     
-    private var formartedNumber: String? {
+    public var formartedNumber: String? {
         return BaseUser.numberFormatter.string(for: number)
     }
     
-    private var number: PhoneNumber? {
+    public var number: PhoneNumber? {
         return try? BaseUser.numberKit.parse(phoneNumber)
     }
     
@@ -34,7 +35,7 @@ open class BaseUser: NSObject, Codable {
         }
     }
     private enum CodingKeys: String, CodingKey {
-            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL
+            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL, image
         }
     
     public var hasValidNumber: Bool {
@@ -54,6 +55,7 @@ open class BaseUser: NSObject, Codable {
     public var chatId: String = ""
     public var displayName: String { firstname + " " + lastname }
     public var imageUrl: String?
+    public var picture: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
     public var image: UIImage? {
         didSet {
             guard let image = image,
@@ -61,6 +63,7 @@ open class BaseUser: NSObject, Codable {
                 return
             }
             imageUrl = url.absoluteString
+            let _ = try? ImageManager.save(image, imagePath: "user")
         }
     }
     
@@ -80,15 +83,19 @@ open class BaseUser: NSObject, Codable {
                 imageUrl = url
             } else if let url = try? container.decodeIfPresent(String.self, forKey: .imageURL) {
                 imageUrl = url
+            } else if let url = try? container.decodeIfPresent(String.self, forKey: .image) {
+                imageUrl = url
             } else {
                 imageUrl = nil
             }
+            super.init()
             //optional
             // retrieve an internation string ans split it to countryCode and national number
             let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
             guard internationalNumber.isEmpty == false else {
                 countryCode = Locale.current.regionCode ?? "fr"
                 phoneNumber = ""
+                handleUserPicture()
                 return
             }
             guard let number = try? BaseUser.numberKit.parse(internationalNumber) else {
@@ -99,6 +106,7 @@ open class BaseUser: NSObject, Codable {
                 throw PhoneNumberError.notANumber
             }
             phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
+            handleUserPicture()
         } catch  {
             throw error
         }
@@ -139,6 +147,23 @@ open class BaseUser: NSObject, Codable {
             data.append(imageData, withName: "image", fileName: "image", mimeType: "image/jpg")
         }
         return data
+    }
+    
+    func handleUserPicture() {
+        if let image = ImageManager.fetchImage(with: "user") {
+            picture.send(image)
+        }
+        
+        DispatchQueue.global().async { [weak self] in
+            if let url = self?.imageUrl,
+               let imgUrl = URL(string: url),
+               let data = try? Data(contentsOf: imgUrl),
+               let image = UIImage(data: data) {
+                self?.picture.send(image)
+            } else {
+                self?.picture.send(UIImage(named: "documentUser"))
+            }
+        }
     }
 }
 

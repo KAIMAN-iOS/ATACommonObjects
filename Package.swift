@@ -17,6 +17,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/KAIMAN-iOS/KExtensions", .branch("master")),
         .package(url: "https://github.com/KAIMAN-iOS/ATAConfiguration", .branch("master")),
+        .package(url: "https://github.com/KAIMAN-iOS/KStorage", .branch("master")),
         .package(url: "https://github.com/malcommac/SwiftLocation", from: "5.1.0"),
         .package(url: "https://github.com/KAIMAN-iOS/PhoneNumberKit", from: "4.0.0"),
     ],
@@ -25,6 +26,6 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "ATACommonObjects",
-            dependencies: ["KExtensions", "ATAConfiguration", "SwiftLocation", "PhoneNumberKit"]),
+            dependencies: ["KExtensions", "ATAConfiguration", "SwiftLocation", "PhoneNumberKit", "KStorage"]),
     ]
 )
