@@ -73,6 +73,7 @@ open class BaseUser: NSObject, Codable {
     required public init(from decoder: Decoder) throws {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.image = ImageManager.fetchImage(with: "user")
             //mandatory
             id = try container.decodeIfPresent(Int.self, forKey: .id) ?? UUID().uuidString.hash
             firstname = try container.decode(String.self, forKey: .firstname)
@@ -89,7 +90,6 @@ open class BaseUser: NSObject, Codable {
                 imageUrl = nil
             }
             super.init()
-            self.image = ImageManager.fetchImage(with: "user")
             //optional
             // retrieve an internation string ans split it to countryCode and national number
             let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
@@ -161,8 +161,7 @@ open class BaseUser: NSObject, Codable {
                let data = try? Data(contentsOf: imgUrl),
                let image = UIImage(data: data) {
                 self?.picture.send(image)
-            } else {
-                self?.picture.send(UIImage(named: "documentUser"))
+                let _ = try? ImageManager.save(image, imagePath: "user")
             }
         }
     }
