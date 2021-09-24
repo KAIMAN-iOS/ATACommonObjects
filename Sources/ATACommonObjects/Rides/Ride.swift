@@ -234,14 +234,6 @@ open class BaseRide: NSObject, Codable {
     public var state: RideState = .pending
     public var numberOfPassengers: Int = 1
     public var numberOfLuggages: Int = 0
-    public var rideType: RideHistoryType? {
-        switch state {
-        case .booked: return .booked
-        case .cancelled: return .cancelled
-        case .ended: return .completed
-        default: return nil
-        }
-    }
     
     public override var hash: Int {
         var hasher = Hasher()
@@ -328,6 +320,15 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
         case .cancelled: return "ride state cancelled".bundleLocale()
         case .booked: return "ride state booked".bundleLocale()
         case .pending: return "ride state pending".bundleLocale()
+        default: return nil
+        }
+    }
+    
+    public var subtitle: String? {
+        switch self {
+        case .ended: return "ride state ended".bundleLocale()
+        case .cancelled: return "ride state cancelled".bundleLocale()
+        case .booked: return "ride state booked".bundleLocale()
         default: return nil
         }
     }
@@ -435,33 +436,6 @@ public class RideHistoryModel: Codable, RideContainable {
     public var priceDisplay: String? {
         guard let amount = payment.stats.filter({ $0.type == .amount }).first else { return nil }
         return "\(amount.displayValue) \(amount.unit)"
-    }
-}
-
-public enum RideHistoryType: Int, CaseIterable, Comparable {
-    public static func < (lhs: RideHistoryType, rhs: RideHistoryType) -> Bool {
-        lhs.rawValue < rhs.rawValue
-    }
-    
-    case booked = 0, completed, cancelled
-    public var canCancel: Bool {
-        return self == .booked
-    }
-    
-    public var title: String {
-        switch self {
-        case .booked: return "booked".bundleLocale().uppercased()
-        case .completed: return "completed".bundleLocale().uppercased()
-        case .cancelled: return "cancelled".bundleLocale().uppercased()
-        }
-    }
-    
-    public var subtitle: String {
-        switch self {
-        case .booked: return "booked subtitle".bundleLocale().uppercased()
-        case .completed: return "completed subtitle".bundleLocale().uppercased()
-        case .cancelled: return "cancelled subtitle".bundleLocale().uppercased()
-        }
     }
 }
 //
