@@ -101,15 +101,6 @@ open class Address: NSObject, Codable {
     }
 }
 
-public struct CancelRideReason {
-    public let message: String
-    public let code: Int
-    public init(message: String, code: Int) {
-        self.message = message
-        self.code = code
-    }
-}
-
 public class SearchOptions: NSObject, Codable {
     public var vehicleOptions: [VehicleOption] = []
     public var vehicleType: VehicleType?
@@ -425,104 +416,28 @@ public class OngoingRide: Codable, RideContainable {
     }
 }
 
+public enum RideCancelReason: Int, Codable {
+    // GLOBAL
+    case cancelPendingRideByPassenger = 100
+    case noDriverFound = 101
+    // DRIVER
+    case engineBreakdown = 200
+    case passengerNotFound = 201
+    case otherReasonbyDriver = 202
+    // PASSENGER
+    case cancelledyPassenger = 300
+}
+
 public class RideHistoryModel: Codable, RideContainable {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
     public var driver: BaseDriver?
     public var payment: Payment
-    public var cancellationReason: String?
+    public var cancellationReason: RideCancelReason?
     public var pickUpAddress: Address?
     public var priceDisplay: String? {
         guard let amount = payment.stats.filter({ $0.type == .amount }).first else { return nil }
         return "\(amount.displayValue) \(amount.unit)"
     }
 }
-//
-//// random extension for mockup
-//
-//extension RideHistoryModel {
-//    public static func random() -> RideHistoryModel {
-//        let randomType = Int.random(in: 0...2)
-//        return RideHistoryModel.init(id: UUID().uuidString.hash,
-//                                     date: Int.random(in: 0...1) == 0 ? Date() : Date().addingTimeInterval(23*87*7),
-//                                     isImmediate: Int.random(in: 0...1) == 0 ? true : false,
-//                                     fromAddress: Address.random,
-//                                     toAddress: Address.optionnalRandom,
-//                                     state: randomType == 0 ? RideState.booked : (randomType == 1 ? .cancelled : .ended),
-//                                     numberOfPassengers: Int.random(in: 1...5),
-//                                     numberOfLuggages: Int.random(in: 0...6),
-//                                     vehicle: BaseVehicle(),
-//                                     passenger: Passenger(id: 89067, firstname: "Jean-Pierre", lastname: "BACRI", phone: "0987654321", picture: URL(string: "https://images.laprovence.com/media/afp/2021-01/2021-01-18/6b1814044de4a65ba1376d500122ec3972e17570.jpg?twic=v1/dpr=2/focus=900x576.5/cover=1000x562")),
-//                                     memo: "this is the meme",
-//                                     reference: "this is the reference",
-//                                     cancellationReason: Int.random(in: 0...1) == 0 ? "Passager absent" : nil,
-//                                     pickUpAddress: Address.optionnalRandom,
-//                                     vatValue: Int.random(in: 0...1) == 0 ? 20 : nil)
-//    }
-//
-//}
-//
-//public extension Address {
-//    static var add1: Address {
-//        Address(address: "la barque 13710 FUVEAU", coordinates: Coordinates(location: CLLocationCoordinate2D(latitude: 43.47865284174063, longitude: 5.53859787072443)))
-//    }
-//    static var add2: Address {
-//        Address(address: "Place Saint-Jean de Malte, 13100 Aix-en-Provence", coordinates: Coordinates(location: CLLocationCoordinate2D(latitude: 43.52645372148015, longitude: 5.452597832139817)))
-//    }
-//    static var add3: Address {
-//        Address(address: "départ adresse 13510 Fuveau", coordinates: Coordinates(location: CLLocationCoordinate2D(latitude: 43.454551591901144, longitude: 5.468953808988056)))
-//    }
-//    static var add4: Address {
-//        Address(address: "rue Courbet 13736 Gardanne", coordinates: Coordinates(location: CLLocationCoordinate2D(latitude: 43.471590283851015, longitude: 5.4925626895974045)))
-//    }
-//    static var add5: Address {
-//        Address(address: "Gare Saint Charles 13000 Marseille", coordinates: Coordinates(location: CLLocationCoordinate2D(latitude: 43.30295892353656, longitude: 5.380216342283413)))
-//    }
-//
-//    static var random: Address {
-//        return [Address.add1, Address.add2, Address.add3, Address.add4, Address.add5][Int.random(in: 0...4)]
-//    }
-//    static var optionnalRandom: Address? {
-//        return [Address.add1, Address.add2, Address.add3, Address.add4, Address.add5, nil][Int.random(in: 0...5)]
-//    }
-//}
-////
-////public extension Rideoptions {
-////    static var opt1: Rideoptions {
-////        Rideoptions(numberOfPassengers: 1, numberOfLuggages: 1, vehicleType: nil)
-////    }
-////    static var opt2: Rideoptions {
-////        Rideoptions(numberOfPassengers: 3, numberOfLuggages: 1, vehicleType: nil)
-////    }
-////    static var opt3: Rideoptions {
-////        Rideoptions(numberOfPassengers: 2, numberOfLuggages: 0, vehicleType: nil)
-////    }
-////    static var opt4: Rideoptions {
-////        Rideoptions(numberOfPassengers: 5, numberOfLuggages: 3, vehicleType: nil)
-////    }
-////    static var random: Rideoptions {
-////        [Rideoptions.opt1, Rideoptions.opt2, Rideoptions.opt3, Rideoptions.opt4][Int.random(in: 0...3)]
-////    }
-////}
-//
-//public extension PendingPaymentRideData {
-//    static var distanceStat: PendingPaymentRideData? {
-//        [PendingPaymentRideData(value: 25, additionnalValue: nil, unit: "km", type: .distance),
-//         PendingPaymentRideData(value: 216, additionnalValue: nil, unit: "km", type: .distance),
-//         PendingPaymentRideData(value: 8, additionnalValue: nil, unit: "km", type: .distance),
-//        nil][Int.random(in: 0...3)]
-//    }
-//    static var priceStat: PendingPaymentRideData? {
-//        [PendingPaymentRideData(value: 25.9, additionnalValue: nil, unit: "€", type: .amount),
-//         PendingPaymentRideData(value: 216.3, additionnalValue: nil, unit: "$", type: .amount),
-//         PendingPaymentRideData(value: 8, additionnalValue: nil, unit: "£", type: .amount),
-//         nil][Int.random(in: 0...3)]
-//    }
-//    static var timeStat: PendingPaymentRideData? {
-//        [PendingPaymentRideData(value: 40, additionnalValue: nil, unit: "min", type: .time),
-//         PendingPaymentRideData(value: 216, additionnalValue: nil, unit: "min", type: .time),
-//         PendingPaymentRideData(value: 8, additionnalValue: nil, unit: "sec", type: .time),
-//         nil][Int.random(in: 0...3)]
-//    }
-//}
