@@ -300,7 +300,7 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
         return lhs.rawValue < rhs.rawValue
     }
     
-    case pending = 1, booked, started, approach, delayed, waiting, pickUpPassenger, pendingPayment, ended, cancelled
+    case pending = 1, booked, started, approach, delayed, waiting, pickUpPassenger, pendingPayment, ended, cancelled, marketPlace
     
     public var displayText: String? {
         switch self {
@@ -311,6 +311,7 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
         case .cancelled: return "ride state cancelled".bundleLocale()
         case .booked: return "ride state booked".bundleLocale()
         case .pending: return "ride state pending".bundleLocale()
+        case .marketPlace: return "ride state marketPlace".bundleLocale()
         default: return nil
         }
     }
@@ -336,6 +337,7 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
         case .pendingPayment: return .ended
         case .ended: return nil
         case .cancelled: return nil
+        case .marketPlace: return nil
         }
     }
 }
