@@ -285,7 +285,7 @@ open class BaseRide: NSObject, Codable {
             isImmediate = try container.decode(Bool.self, forKey: .isImmediate)
             fromAddress = try container.decode(Address.self, forKey: .fromAddress)
             toAddress = try container.decode(Address.self, forKey: .toAddress)
-            origin = try container.decodeIfPresent(RideOrigin.self, forKey: .origin) ?? .booker
+            origin = try container.decodeIfPresent(RideOrigin.self, forKey: .origin) ?? .apps
             state = try container.decode(RideState.self, forKey: .state)
             numberOfPassengers = try container.decode(Int.self, forKey: .numberOfPassengers)
             numberOfLuggages = try container.decode(Int.self, forKey: .numberOfLuggages)
@@ -433,6 +433,7 @@ public class OngoingRide: Codable, RideContainable {
 }
 
 public enum RideCancelReason: Int, Codable {
+    case none = 0
     // GLOBAL
     case cancelPendingRideByPassenger = 100
     case noDriverFound = 101
