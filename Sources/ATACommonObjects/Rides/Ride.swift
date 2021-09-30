@@ -211,6 +211,20 @@ public class Proposal: NSObject, Codable {
     }
 }
 
+public enum RideOrigin: Int, Codable {
+    case booker = 1
+    case apps = 2
+    case letaxi = 3
+    
+    public var displayText: String {
+        switch self {
+        case .booker: return "booker display".bundleLocale().uppercased()
+        case .apps: return "apps display".bundleLocale().uppercased()
+        case .letaxi: return "letaxi display".bundleLocale().uppercased()
+        }
+    }
+}
+
 // MARK: - BaseRide
 open class BaseRide: NSObject, Codable {
     public static func == (lhs: BaseRide, rhs: BaseRide) -> Bool {
@@ -221,7 +235,7 @@ open class BaseRide: NSObject, Codable {
     public var isImmediate: Bool = true
     @objc dynamic public var fromAddress: Address!
     @objc dynamic public var toAddress: Address?
-    public var origin: Int = 0
+    public var origin: RideOrigin = .apps
     public var state: RideState = .pending
     public var numberOfPassengers: Int = 1
     public var numberOfLuggages: Int = 0
@@ -243,7 +257,7 @@ open class BaseRide: NSObject, Codable {
                 isImmediate: Bool,
                 fromAddress: Address,
                 toAddress: Address?,
-                origin: Int = 0,
+                origin: RideOrigin = .apps,
                 state: RideState = .pending,
                 numberOfPassengers: Int,
                 numberOfLuggages: Int) {
@@ -271,7 +285,7 @@ open class BaseRide: NSObject, Codable {
             isImmediate = try container.decode(Bool.self, forKey: .isImmediate)
             fromAddress = try container.decode(Address.self, forKey: .fromAddress)
             toAddress = try container.decode(Address.self, forKey: .toAddress)
-            origin = try container.decode(Int.self, forKey: .origin)
+            origin = try container.decodeIfPresent(RideOrigin.self, forKey: .origin) ?? .booker
             state = try container.decode(RideState.self, forKey: .state)
             numberOfPassengers = try container.decode(Int.self, forKey: .numberOfPassengers)
             numberOfLuggages = try container.decode(Int.self, forKey: .numberOfLuggages)
