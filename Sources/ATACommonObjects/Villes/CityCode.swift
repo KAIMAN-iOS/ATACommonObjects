@@ -8,9 +8,9 @@
 import UIKit
 
 public struct CityCode: Decodable, Hashable {
-    let name: String
-    let code: String
-    let cp: [String]
+    public let name: String
+    public let code: String
+    public let cp: [String]
     
     enum CodingKeys: String, CodingKey {
         case name = "nom"
