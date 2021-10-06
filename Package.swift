@@ -27,6 +27,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "ATACommonObjects",
-            dependencies: ["KExtensions", "ATAConfiguration", "SwiftLocation", "PhoneNumberKit", "KStorage", "NSAttributedStringBuilder"]),
+            dependencies: ["KExtensions", "ATAConfiguration", "SwiftLocation", "PhoneNumberKit", "KStorage", "NSAttributedStringBuilder"],
+            resources: [.process("Villes/CP-FR.txt")])
     ]
 )
