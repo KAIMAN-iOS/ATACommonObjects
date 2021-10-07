@@ -52,10 +52,13 @@ open class Address: NSObject, Codable {
     public var name: String?
     public var address: String?
     public var coordinates: Coordinates
+    public var code: String?
+    public var cp: String?
+    public var countryCode: String? = nil
     public var isValid: Bool { return CLLocationCoordinate2DIsValid(coordinates.asCoord2D) }
     
     enum CodingKeys: String, CodingKey {
-        case name, address, coordinates, id
+        case name, address, coordinates, id, code
     }
     
     public required init(from decoder: Decoder) throws {
@@ -65,6 +68,7 @@ open class Address: NSObject, Codable {
         address = adr
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? adr
         coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
+        code = try container.decodeIfPresent(String.self, forKey: .code)
     }
     
     open func encode(to encoder: Encoder) throws {
@@ -72,23 +76,20 @@ open class Address: NSObject, Codable {
         try container.encodeIfPresent(id, forKey: .id)
         try container.encode(address, forKey: .address)
         try container.encodeIfPresent(name, forKey: .name)
+        try container.encodeIfPresent(code, forKey: .code)
         try container.encode(coordinates, forKey: .coordinates)
     }
     
     public init(name: String? = nil,
                 address: String? = nil,
-                coordinates: Coordinates) {
+                coordinates: Coordinates,
+                countryCode: String? = nil,
+                cp: String? = nil) {
         self.address = address
         self.coordinates = coordinates
         self.name = name
-    }
-    
-    public init(name: String? = nil,
-                address: String? = nil,
-                coordinates: CLLocationCoordinate2D) {
-        self.address = address
-        self.coordinates = Coordinates(location: coordinates)
-        self.name = name
+        self.countryCode = countryCode
+        self.cp = cp
     }
     public var asCoordinates2D: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude) }
     open override var hash: Int {
@@ -108,9 +109,7 @@ public class SearchOptions: NSObject, Codable {
     public var reference: String?
     static var `default` = SearchOptions()
     
-    override init() {
-        
-    }
+    override init() {}
     
     enum CodingKeys: String, CodingKey {
         case vehicleOptions, vehicleType, memo, reference
