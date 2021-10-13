@@ -63,7 +63,7 @@ open class BaseUser: NSObject, Codable {
                 return
             }
             imageUrl = url.absoluteString
-            let _ = try? ImageManager.save(image, imagePath: "user")
+            let _ = try? ImageManager.save(image, imagePath: "user/\(id)")
         }
     }
     
@@ -73,9 +73,9 @@ open class BaseUser: NSObject, Codable {
     required public init(from decoder: Decoder) throws {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.image = ImageManager.fetchImage(with: "user")
             //mandatory
             id = try container.decodeIfPresent(Int.self, forKey: .id) ?? UUID().uuidString.hash
+            self.image = ImageManager.fetchImage(with: "user/\(id)")
             firstname = try container.decode(String.self, forKey: .firstname)
             lastname = try container.decode(String.self, forKey: .lastname)
             firstname = try container.decode(String.self, forKey: .firstname)
@@ -156,12 +156,13 @@ open class BaseUser: NSObject, Codable {
         }
         
         DispatchQueue.global().async { [weak self] in
-            if let url = self?.imageUrl,
+            if let self = self,
+               let url = self.imageUrl,
                let imgUrl = URL(string: url),
                let data = try? Data(contentsOf: imgUrl),
                let image = UIImage(data: data) {
-                self?.picture.send(image)
-                let _ = try? ImageManager.save(image, imagePath: "user")
+                self.picture.send(image)
+                let _ = try? ImageManager.save(image, imagePath: "user/\(self.id)")
             }
         }
     }
@@ -171,7 +172,6 @@ open class BaseDriver: BaseUser {
     public var overallRating: Double!
     public var driverRating: Double!
     public var carRating: Double!
-    
     public static var `default` = BaseDriver()
 }
 
