@@ -54,6 +54,7 @@ open class BaseUser: NSObject, Codable {
     public var phoneNumber: String = ""
     public var chatId: String = ""
     public var displayName: String { firstname + " " + lastname }
+    public var shortDisplayName: String { firstname + " " + "\(lastname.first?.uppercased() ?? "")" + "." }
     public var imageUrl: String?
     public var picture: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
     public var image: UIImage? {

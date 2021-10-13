@@ -10,6 +10,7 @@ import CoreLocation
 import NSAttributedStringBuilder
 import DateExtension
 import CodableExtension
+import StringExtension
 
 extension String {
     func bundleLocale() -> String {
@@ -398,7 +399,7 @@ public class RideProposal: NSObject, Codable, RideContainable {
     public let receivedDate: Date = Date()
     @objc public dynamic var progress: Double = 0.0
     public static var rideChannelPrefix = "_rideChannel_"
-    public static var rideChannelGroupTypeName = "clients".bundleLocale()
+    public static var rideChannelGroupTypeName = "rideChannelsTitle".local()
     
     enum CodingKeys: String, CodingKey {
         case ride
