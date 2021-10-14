@@ -54,6 +54,7 @@ open class BaseUser: NSObject, Codable {
     public var phoneNumber: String = ""
     public var chatId: String = ""
     public var displayName: String { firstname + " " + lastname }
+    public var shortDisplayName: String { firstname + " " + "\(lastname.first?.uppercased() ?? "")" + "." }
     public var imageUrl: String?
     public var picture: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
     public var image: UIImage? {
@@ -79,7 +80,7 @@ open class BaseUser: NSObject, Codable {
             firstname = try container.decode(String.self, forKey: .firstname)
             lastname = try container.decode(String.self, forKey: .lastname)
             firstname = try container.decode(String.self, forKey: .firstname)
-            chatId = try container.decodeIfPresent(String.self, forKey: .chatId) ?? "In4p1PLFmcvZQffWpRpz" // In4p1PLFmcvZQffWpRpz is Julie in FireStore
+            chatId = try container.decodeIfPresent(String.self, forKey: .chatId) ?? "" //"In4p1PLFmcvZQffWpRpz" // In4p1PLFmcvZQffWpRpz is Julie in FireStore
             if let url = try? container.decodeIfPresent(String.self, forKey: .imageUrl) {
                 imageUrl = url
             } else if let url = try? container.decodeIfPresent(String.self, forKey: .imageURL) {
