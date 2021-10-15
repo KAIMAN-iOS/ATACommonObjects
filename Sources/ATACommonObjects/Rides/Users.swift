@@ -64,7 +64,7 @@ open class BaseUser: NSObject, Codable {
                 return
             }
             imageUrl = url.absoluteString
-            let _ = try? ImageManager.save(image, imagePath: "user/\(id)")
+            let _ = try? ImageManager.save(image, imagePath: "user-\(id)")
         }
     }
     
@@ -75,8 +75,9 @@ open class BaseUser: NSObject, Codable {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             //mandatory
-            id = try container.decodeIfPresent(Int.self, forKey: .id) ?? UUID().uuidString.hash
-            self.image = ImageManager.fetchImage(with: "user/\(id)")
+            let identifier = try container.decodeIfPresent(Int.self, forKey: .id) ?? UUID().uuidString.hash
+            id = identifier
+            self.image = ImageManager.fetchImage(with: "user-\(identifier)")
             firstname = try container.decode(String.self, forKey: .firstname)
             lastname = try container.decode(String.self, forKey: .lastname)
             firstname = try container.decode(String.self, forKey: .firstname)
@@ -163,7 +164,7 @@ open class BaseUser: NSObject, Codable {
                let data = try? Data(contentsOf: imgUrl),
                let image = UIImage(data: data) {
                 self.picture.send(image)
-                let _ = try? ImageManager.save(image, imagePath: "user/\(self.id)")
+                let _ = try? ImageManager.save(image, imagePath: "user-\(self.id)")
             }
         }
     }
