@@ -18,7 +18,7 @@
 "covidShield option" = "Paroi de séparation Covid19";
 "englishSpoken option" = "Chauffeur parlant anglais";
 "mkids1 option" = "1 réhausseur";
-"mkids2 option" = "2 réhausseur";
+"mkids2 option" = "2 réhausseurs";
 "mkids3 option" = "1 siège bébé";
 "mkids4 option" = "1 siège bébé + 1 réhausseur";
 "pets option" = "Animaux acceptés";
@@ -27,7 +27,7 @@
 "covidShield option display" = "Paroi de\nséparation Covid19";
 "englishSpoken option display" = "Chauffeur\nparlant anglais";
 "mkids1 option display" = "1 réhausseur";
-"mkids2 option display" = "2 réhausseur";
+"mkids2 option display" = "2 réhausseurs";
 "mkids3 option display" = "1 siège bébé";
 "mkids4 option display" = "1 siège bébé\n+ 1 réhausseur";
 "pets option display" = "Animaux acceptés";
