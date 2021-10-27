@@ -35,7 +35,7 @@ open class BaseUser: NSObject, Codable {
         }
     }
     private enum CodingKeys: String, CodingKey {
-            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL, image
+            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL, image, countryCode
         }
     
     public var hasValidNumber: Bool {
@@ -101,10 +101,8 @@ open class BaseUser: NSObject, Codable {
                 handleUserPicture()
                 return
             }
-            guard let number = try? BaseUser.numberKit.parse(internationalNumber) else {
-                throw PhoneNumberError.invalidCountryCode
-            }
-            countryCode = BaseUser.numberKit.mainCountry(forCode: number.countryCode) ?? "fr"
+            
+            countryCode = try container.decode(String.self, forKey: .countryCode)
             guard let nb = try? BaseUser.numberKit.parse(internationalNumber) else {
                 throw PhoneNumberError.notANumber
             }
