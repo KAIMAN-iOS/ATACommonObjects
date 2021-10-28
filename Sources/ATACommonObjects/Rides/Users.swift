@@ -187,10 +187,9 @@ open class BaseDriver: BaseUser {
     required public init(from decoder: Decoder) throws {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            //mandatory
-            overallRating = try container.decode(Double.self, forKey: .overallRating)
-            driverRating = try container.decode(Double.self, forKey: .driverRating)
-            carRating = try container.decode(Double.self, forKey: .carRating)
+            overallRating = try container.decodeIfPresent(Double.self, forKey: .overallRating) ?? 0.0
+            driverRating = try container.decodeIfPresent(Double.self, forKey: .driverRating) ?? 0.0
+            carRating = try container.decodeIfPresent(Double.self, forKey: .carRating) ?? 0.0
             try super.init(from: decoder)
         } catch(let error)  {
             //os_log("⛔️ 🚕 driver decompress error %@", log: OSLog.mappingObject, type: .error, error.localizedDescription)
