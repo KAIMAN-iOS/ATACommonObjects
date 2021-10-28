@@ -35,9 +35,11 @@
 "ride state started" = "Course prête";
 "ride state approach" = "En approche";
 "ride state pickUpPassenger" = "Passager à bord";
-"ride state ended" = "Terminée";
-"ride state cancelled" = "Annulée";
-"ride state booked" = "Réservée";
+"ride state ended" = "Terminée(s)";
+"cell ride state ended" = "Terminée";
+"ride state cancelled" = "Annulée(s)";
+"cell ride state cancelled" = "Annulée";
+"ride state booked" = "A venir";
 "ride state pending" = "En attente";
 "start ride" = "Commencer la course";
 "amount stat" = "montant";

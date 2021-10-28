@@ -330,6 +330,20 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
         }
     }
     
+    public var displayCellText: String? {
+        switch self {
+        case .started: return "ride state started".bundleLocale()
+        case .approach: return "ride state approach".bundleLocale()
+        case .pickUpPassenger: return "ride state pickUpPassenger".bundleLocale()
+        case .ended: return "cell ride state ended".bundleLocale()
+        case .cancelled: return "cell ride state cancelled".bundleLocale()
+        case .booked: return "ride state booked".bundleLocale()
+        case .pending: return "ride state pending".bundleLocale()
+        case .marketPlace: return "ride state marketPlace".bundleLocale()
+        default: return nil
+        }
+    }
+
     public var subtitle: String? {
         switch self {
         case .ended: return "ride state ended".bundleLocale()
