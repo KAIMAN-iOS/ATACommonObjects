@@ -173,6 +173,31 @@ open class BaseDriver: BaseUser {
     public var driverRating: Double!
     public var carRating: Double!
     public static var `default` = BaseDriver()
+    
+    enum CodingKeys: String, CodingKey {
+        case overallRating
+        case driverRating
+        case carRating
+    }
+    
+    public override init() {
+        super.init()
+    }
+    
+    required public init(from decoder: Decoder) throws {
+        do {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            //mandatory
+            overallRating = try container.decode(Double.self, forKey: .overallRating)
+            driverRating = try container.decode(Double.self, forKey: .driverRating)
+            carRating = try container.decode(Double.self, forKey: .carRating)
+            try super.init(from: decoder)
+        } catch(let error)  {
+            //os_log("⛔️ 🚕 driver decompress error %@", log: OSLog.mappingObject, type: .error, error.localizedDescription)
+            print("🚖 driver decompress error \(error)")
+            throw error
+        }
+    }
 }
 
 open class BasePassenger: BaseUser {
