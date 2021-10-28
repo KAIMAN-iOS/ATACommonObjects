@@ -392,7 +392,7 @@ open class CreateRide: Codable, RideContainable {
 public typealias Ride = RideProposal
 public class RideProposal: NSObject, Codable, RideContainable {
     public var ride: BaseRide
-    public var options: SearchOptions
+    public var options: SearchOptions?
     public var passenger: BasePassenger?
     public var validUntil: CustomDate<GMTISODateFormatterDecodable>!
     // the date the ride has been received
@@ -414,6 +414,18 @@ public class RideProposal: NSObject, Codable, RideContainable {
     }
     public static func == (lhs: RideProposal, rhs: RideProposal) -> Bool {
         return lhs.hashValue == rhs.hashValue
+    }
+    
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        do {
+            ride = try container.decode(BaseRide.self, forKey: .ride)
+            options = try container.decodeIfPresent(SearchOptions.self, forKey: .options)
+            passenger = try container.decodeIfPresent(BasePassenger.self, forKey: .passenger)
+            validUntil = try container.decode(CustomDate<GMTISODateFormatterDecodable>.self, forKey: .validUntil)
+        } catch {
+            throw error
+        }
     }
 }
 
