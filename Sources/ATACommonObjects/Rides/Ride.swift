@@ -401,6 +401,33 @@ open class CreateRide: Codable, RideContainable {
     }
 }
 
+open class CreatedRide: Codable, RideContainable {
+    public var ride: BaseRide
+    public var options: SearchOptions
+    public var passenger: BasePassenger?
+    public var proposal: Proposal
+    
+    enum CodingKeys: String, CodingKey {
+        case options = "searchOptions", ride, passenger, proposal
+    }
+    
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        //mandatory
+        ride = try container.decode(BaseRide.self, forKey: .ride)
+        options = try container.decode(SearchOptions.self, forKey: .options)
+        passenger = try container.decodeIfPresent(BasePassenger.self, forKey: .passenger)
+        proposal = try container.decode(Proposal.self, forKey: .proposal)
+    }
+
+    
+//    public init(passenger: BasePassenger? = nil) {
+//        ride = BaseRide.default
+//        options = SearchOptions.default
+//        self.passenger = passenger ?? BasePassenger.default
+//    }
+}
+
 // MARK: - New Ride
 // MARK: ride proposal for driver
 public typealias Ride = RideProposal
@@ -457,6 +484,14 @@ public class OngoingRide: Codable, RideContainable {
         case passenger
         case vehicle
         case driver
+    }
+    
+    public init(vehicle: BaseVehicle? = nil, ride: BaseRide, passenger: BasePassenger? = nil, driver: BaseDriver? = nil, options: SearchOptions) {
+        self.vehicle = vehicle
+        self.ride = ride
+        self.passenger = passenger
+        self.driver = driver
+        self.options = options
     }
 }
 
