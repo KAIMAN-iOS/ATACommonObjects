@@ -188,6 +188,7 @@ public enum RideEndStat: Int, Codable {
 public class Proposal: NSObject, Codable {
     public var saveForMe: Bool?
     public var shareGroups: [String] = []
+    public var shareGroupsInt: [Int] = []
     
     public init(saveForMe: Bool, shareGroups: [String]) {
         self.saveForMe = saveForMe
@@ -201,6 +202,12 @@ public class Proposal: NSObject, Codable {
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         saveForMe = try container.decode(Bool.self, forKey: .saveForMe)
+        // TODO: A supprimer quand jules aura changer le type de Int en String
+        guard (try? container.decode([String]?.self, forKey: .shareGroups)) != nil else {
+            shareGroupsInt = try container.decode([Int].self, forKey: .shareGroups)
+            shareGroups = shareGroupsInt.toStringArray()
+            return
+        }
         shareGroups = try container.decode([String].self, forKey: .shareGroups)
     }
     
@@ -208,6 +215,14 @@ public class Proposal: NSObject, Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(saveForMe, forKey: .saveForMe)
         try container.encode(shareGroups, forKey: .shareGroups)
+    }
+}
+
+extension Array where Element == Int {
+    func toStringArray() -> [String] {
+        var strs: [String] = []
+        self.forEach({ strs.append(String($0))})
+        return strs
     }
 }
 
