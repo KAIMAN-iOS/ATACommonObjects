@@ -68,6 +68,7 @@
 "completed subtitle" = "Aucune course terminée pour l'instant";
 "cancelled subtitle" = "Aucune course annulée pour l'instant";
 "booker display" = "Booker";
-"apps display" = "1001Taxis";
+"apps display" = "1001TAXIS";
+"driver app display" = "MyCloudTaxi";
 "letaxi display" = "Le.taxi";
 "sent by" = "Envoyée par: ";

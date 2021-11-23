@@ -230,12 +230,14 @@ public enum RideOrigin: Int, Codable {
     case booker = 1
     case apps = 2
     case letaxi = 3
+    case driverApp = 4
     
     public var displayText: String {
         switch self {
         case .booker: return "booker display".bundleLocale().uppercased()
         case .apps: return "apps display".bundleLocale().uppercased()
         case .letaxi: return "letaxi display".bundleLocale().uppercased()
+        case .driverApp: return "driver app display".bundleLocale().uppercased()
         }
     }
 }
@@ -389,6 +391,18 @@ protocol RideContainable {
     var ride: BaseRide { get }
 }
 
+public enum DisplayMode {
+    case driver, passenger, business
+    
+    var hideUserIcon: Bool {
+        switch self {
+        case .driver: return true
+        case .passenger: return false
+        case .business: return false
+        }
+    }
+}
+
 open class CreateRide: Codable, RideContainable {
     public var ride: BaseRide
     public var options: SearchOptions
@@ -409,8 +423,9 @@ open class CreateRide: Codable, RideContainable {
     }
 
     
-    public init(passenger: BasePassenger? = nil) {
+    public init(passenger: BasePassenger? = nil, mode: DisplayMode = .passenger) {
         ride = BaseRide.default
+//        ride.origin =  mode == .driver ? .driverApp : .apps
         options = SearchOptions.default
         self.passenger = passenger ?? BasePassenger.default
     }
