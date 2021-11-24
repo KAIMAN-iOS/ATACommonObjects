@@ -11,6 +11,7 @@ import NSAttributedStringBuilder
 import DateExtension
 import CodableExtension
 import StringExtension
+import SwiftyUserDefaults
 
 extension String {
     func bundleLocale() -> String {
@@ -135,6 +136,11 @@ public class SearchOptions: NSObject, Codable {
 }
 
 public class Payment: NSObject, Codable {
+    public init(vatValue: Double? = nil, stats: [PendingPaymentRideData] = []) {
+        self.vatValue = vatValue
+        self.stats = stats
+    }
+    
     public var vatValue: Double?
     public var stats: [PendingPaymentRideData] = []
     
@@ -501,7 +507,7 @@ public class RideProposal: NSObject, Codable, RideContainable {
     }
 }
 
-public class OngoingRide: Codable, RideContainable {
+public class OngoingRide: Codable, RideContainable, DefaultsSerializable  {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
@@ -525,6 +531,12 @@ public class OngoingRide: Codable, RideContainable {
     }
 }
 
+extension OngoingRide {
+    public func toRideHistoryModel() -> RideHistoryModel {
+        return RideHistoryModel(vehicle: self.vehicle, ride: self.ride, passenger: self.passenger, driver: self.driver, payment: Payment(vatValue: 20.0, stats: []), cancellationReason: nil, pickUpAddress: self.ride.fromAddress)
+    }
+}
+
 public enum RideCancelReason: Int, Codable {
     case none = 0
     // GLOBAL
@@ -539,6 +551,16 @@ public enum RideCancelReason: Int, Codable {
 }
 
 public class RideHistoryModel: Codable, RideContainable {
+    internal init(vehicle: BaseVehicle? = nil, ride: BaseRide, passenger: BasePassenger? = nil, driver: BaseDriver? = nil, payment: Payment, cancellationReason: RideCancelReason? = nil, pickUpAddress: Address? = nil) {
+        self.vehicle = vehicle
+        self.ride = ride
+        self.passenger = passenger
+        self.driver = driver
+        self.payment = payment
+        self.cancellationReason = cancellationReason
+        self.pickUpAddress = pickUpAddress
+    }
+    
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
@@ -549,5 +571,9 @@ public class RideHistoryModel: Codable, RideContainable {
     public var priceDisplay: String? {
         guard let amount = payment.stats.filter({ $0.type == .amount }).first else { return nil }
         return "\(amount.displayValue) \(amount.unit)"
+    }
+    
+    public func toOngoingRide() -> OngoingRide {
+        return OngoingRide(vehicle: self.vehicle, ride: self.ride, passenger: self.passenger, driver: self.driver, options: SearchOptions())
     }
 }
