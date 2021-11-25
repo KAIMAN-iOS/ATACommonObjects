@@ -569,7 +569,7 @@ public class RideHistoryModel: Codable, RideContainable {
     public var cancellationReason: RideCancelReason?
     public var pickUpAddress: Address?
     public var priceDisplay: String? {
-        guard let amount = payment.stats.filter({ $0.type == .amount }).first else { return nil }
+        guard let amount = payment.stats.filter({ $0.type == .amount }).first, amount.displayValue.isEmpty == false, amount.unit.isEmpty == false else { return nil }
         return "\(amount.displayValue) \(amount.unit)"
     }
     
