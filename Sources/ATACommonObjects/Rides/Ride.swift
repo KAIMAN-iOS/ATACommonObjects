@@ -431,7 +431,7 @@ open class CreateRide: Codable, RideContainable {
     
     public init(passenger: BasePassenger? = nil, mode: DisplayMode = .passenger) {
         ride = BaseRide.default
-//        ride.origin =  mode == .driver ? .driverApp : .apps
+        ride.origin =  mode == .driver ? .driverApp : .apps
         options = SearchOptions.default
         self.passenger = passenger ?? BasePassenger.default
     }
