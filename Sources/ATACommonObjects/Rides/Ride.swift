@@ -157,7 +157,7 @@ public class Payment: NSObject, Codable {
     
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        vatValue = try container.decode(Double.self, forKey: .vatValue)
+        vatValue = try container.decodeIfPresent(Double.self, forKey: .vatValue)
         stats = try container.decode([PendingPaymentRideData].self, forKey: .stats)
     }
     
@@ -169,15 +169,17 @@ public class Payment: NSObject, Codable {
 }
 
 public struct PendingPaymentRideData: Codable {
-    public var value: Double
+    public var value: Double?
     public var additionnalValue: Double? // used for VAT
-    public var unit: String
+    public var unit: String?
     public var type: RideEndStat
     public var vatValue: Double?
     public var displayValue: String {
-        let hasDigits = value - Double(Int(value)) > 0
-        return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? value : Int(value)))
+        guard let unwrappedValue = value else { return "" }
+        let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
+        return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? unwrappedValue : Int(unwrappedValue)))
     }
+    
     public init(value: Double, additionnalValue: Double?, unit: String, type: RideEndStat) {
         self.value = value
         self.additionnalValue = additionnalValue
@@ -194,6 +196,13 @@ public enum RideEndStat: Int, Codable {
         case .amount: return "amount stat".bundleLocale()
         case .distance: return "distance stat".bundleLocale()
         case .time: return "time stat".bundleLocale()
+        }
+    }
+    public var defaultUnit: String {
+        switch self {
+        case .amount: return Locale.current.currencySymbol ?? "€"
+        case .distance: return "km"
+        case .time: return "min"
         }
     }
 }
@@ -598,8 +607,10 @@ public class RideHistoryModel: Codable, RideContainable {
     public var cancellationReason: RideCancelReason?
     public var pickUpAddress: Address?
     public var priceDisplay: String? {
-        guard let amount = payment.stats.filter({ $0.type == .amount }).first, amount.displayValue.isEmpty == false, amount.unit.isEmpty == false else { return nil }
-        return "\(amount.displayValue) \(amount.unit)"
+        guard let amount = payment.stats.filter({ $0.type == .amount }).first,
+                amount.displayValue.isEmpty == false,
+                amount.unit?.isEmpty == false else { return nil }
+        return "\(amount.displayValue) \(amount.unit ?? amount.type.defaultUnit)"
     }
     
     public func toOngoingRide() -> OngoingRide {
