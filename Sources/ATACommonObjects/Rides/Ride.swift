@@ -133,6 +133,13 @@ public class SearchOptions: NSObject, Codable {
         try container.encodeIfPresent(memo, forKey: .memo)
         try container.encodeIfPresent(reference, forKey: .reference)
     }
+    
+    func reset() {
+        vehicleOptions = []
+        vehicleType = nil
+        memo = nil
+        reference = nil
+    }
 }
 
 public class Payment: NSObject, Codable {
@@ -199,6 +206,10 @@ public class Proposal: NSObject, Codable {
     public init(saveForMe: Bool, shareGroups: [Int]) {
         self.saveForMe = saveForMe
         self.shareGroups = shareGroups
+    }
+    
+    public override convenience init() {
+        self.init(saveForMe: false, shareGroups: [])
     }
     
     enum CodingKeys: String, CodingKey {
@@ -274,7 +285,6 @@ open class BaseRide: NSObject, Codable {
     }
     static var `default` = BaseRide()
     
-    
     public convenience init(id: Int,
                 date: Date,
                 isImmediate: Bool,
@@ -294,6 +304,16 @@ open class BaseRide: NSObject, Codable {
         self.state = state
         self.numberOfPassengers = numberOfPassengers
         self.numberOfLuggages = numberOfLuggages
+    }
+    
+    func reset() {
+        startDate = CustomDate<GMTISODateFormatterDecodable>(date: Date())
+        isImmediate = true
+        fromAddress = nil
+        toAddress = nil
+        state = .pending
+        numberOfPassengers = 1
+        numberOfLuggages = 0
     }
     
     enum CodingKeys: String, CodingKey {
@@ -427,7 +447,17 @@ open class CreateRide: Codable, RideContainable {
         passenger = try container.decodeIfPresent(BasePassenger.self, forKey: .passenger)
         driver = try container.decodeIfPresent(BaseDriver.self, forKey: .driver)
     }
-
+    
+    public func reset(resetPassenger: Bool = false, resetDriver: Bool = false) {
+        if resetPassenger {
+            passenger = .default
+        }
+        if resetDriver {
+            driver = .default
+        }
+        options.reset()
+        ride.reset()
+    }
     
     public init(passenger: BasePassenger? = nil, mode: DisplayMode = .passenger) {
         ride = BaseRide.default
@@ -455,7 +485,6 @@ open class CreatedRide: Codable, RideContainable {
         passenger = try container.decodeIfPresent(BasePassenger.self, forKey: .passenger)
         proposal = try container.decode(Proposal.self, forKey: .proposal)
     }
-
     
 //    public init(passenger: BasePassenger? = nil) {
 //        ride = BaseRide.default
