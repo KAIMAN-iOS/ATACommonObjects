@@ -267,6 +267,15 @@ public enum VehicleOption: Int, CaseIterable, Codable {
          pets = 256,
          access = 512
     
+    public static var allCases: [VehicleOption] {
+        [.cpam,
+         .covidShield,
+         .englishSpoken,
+         .mkids1,
+         .mkids3,
+         .pets,
+         .access]
+    }
     public var title: String {
         switch self {
         case .cpam: return "cpam option".bundleLocale()
