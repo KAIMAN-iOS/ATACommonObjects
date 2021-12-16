@@ -13,7 +13,7 @@ import Alamofire
 import CodableExtension
 
 open class BaseVehicle: Codable, Hashable {
-    static let newVehicle = "#>NewVehicle<#"
+    static let newVehicle = 0 //"#>NewVehicle<#"
     public static func == (lhs: BaseVehicle, rhs: BaseVehicle) -> Bool {
         let retVal = lhs.id == rhs.id &&
             lhs.brand == rhs.brand &&
@@ -25,7 +25,7 @@ open class BaseVehicle: Codable, Hashable {
         return retVal
     }
     public var isNew: Bool {  id == BaseVehicle.newVehicle }
-    public var id: String = BaseVehicle.newVehicle
+    public var id: Int = BaseVehicle.newVehicle
     public var brand: VehicleBrand? = VehicleBrand.allCases.first
     public var model: String
     public var vehicleType: VehicleType? = VehicleType.allCases.first
@@ -73,9 +73,9 @@ open class BaseVehicle: Codable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         //mandatory
         if let id: String = try? container.decodeIfPresent(String.self, forKey: .id) {
-            self.id = id
+            self.id = Int(id) ?? 0
         } else if let id: Int = try? container.decodeIfPresent(Int.self, forKey: .id) {
-            self.id = "\(id)"
+            self.id = id
         } else {
             throw DecodingError.keyNotFound(CodingKeys.id, DecodingError.Context(codingPath: [CodingKeys.id], debugDescription: "id key missing"))
         }
