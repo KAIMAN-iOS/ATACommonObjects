@@ -177,7 +177,13 @@ public struct PendingPaymentRideData: Codable {
     public var displayValue: String {
         guard let unwrappedValue = value else { return "" }
         let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
-        return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? unwrappedValue : Int(unwrappedValue)))
+        var format = "%d"
+        switch (type, hasDigits) {
+        case (.time, _): format = "%d"
+        case (.amount, let hasDigits): format = hasDigits ? "%0.2f" : "%d"
+        case (.distance, let hasDigits): format = hasDigits ? "%0.1f" : "%d"
+        }
+        return String(format: format, (hasDigits ? unwrappedValue : Int(unwrappedValue)))
     }
     
     public init(value: Double, additionnalValue: Double?, unit: String, type: RideEndStat) {
