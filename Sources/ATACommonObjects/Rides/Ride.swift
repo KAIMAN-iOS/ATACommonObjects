@@ -179,7 +179,7 @@ public struct PendingPaymentRideData: Codable {
         let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
         var format = "%d"
         switch (type, hasDigits) {
-        case (.time, _): format = "%d"
+        case (.time, _): return String(format: format, Int(unwrappedValue))
         case (.amount, let hasDigits): format = hasDigits ? "%0.2f" : "%d"
         case (.distance, let hasDigits): format = hasDigits ? "%0.1f" : "%d"
         }
