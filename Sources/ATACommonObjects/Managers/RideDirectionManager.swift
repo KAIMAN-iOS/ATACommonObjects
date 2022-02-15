@@ -54,11 +54,44 @@ public struct Route {
         case approach, ride
     }
     public var routeType: RouteType!
-    public var route: MKRoute?
+//    public var route: MKRoute?
+    public var polyline: MKPolyline?
+    public var distance: CLLocationDistance = 0
+    public var expectedTravelTime: TimeInterval = 0
+    
     public init(routeType: RouteType!, route: MKRoute?) {
         self.routeType = routeType
-        self.route = route
+        polyline = route?.polyline
+        expectedTravelTime = route?.expectedTravelTime ?? 0
+        distance = route?.distance ?? 0
     }
+    
+    mutating func update(metricsBy metricsUpdate: MetricsUpdate) {
+        expectedTravelTime *= metricsUpdate.timeFactor
+        distance *= metricsUpdate.distanceFactor
+    }
+}
+
+public struct SearchParameters {
+    public var sortCriteria: RideSortCriteria = .any
+    public var updateMetrics: MetricsUpdate = MetricsUpdate()
+    
+    public static let `default`: SearchParameters = SearchParameters()
+    
+    public init(sortCriteria: RideSortCriteria = .any,
+                updateMetrics: MetricsUpdate = .default) {
+        self.sortCriteria = sortCriteria
+        self.updateMetrics = updateMetrics
+    }
+}
+
+public struct MetricsUpdate {
+    // by default, increase the distance by 10%
+    var distanceFactor: Double = 0.1
+    // by default, increase the expectedTravelTime by 10%
+    var timeFactor: Double = 0.1
+    
+    public static let `default`: MetricsUpdate = MetricsUpdate()
 }
 
 public class RideDirectionManager {
@@ -71,19 +104,26 @@ public class RideDirectionManager {
     private var isLocationActive: Bool { SwiftLocation.authorizationStatus == .authorizedWhenInUse || SwiftLocation.authorizationStatus == .authorizedAlways }
     private var loadQueue: DispatchQueue = DispatchQueue(label: "LoadRoutes", qos: .default)
     
-    public func loadDirections<T: BaseRide>(for ride: T, sortCriteria: RideSortCriteria = .any, completion: @escaping ((_ ride: T, _ routes: [Route]) -> Void)) {
+    public func loadDirections<T: BaseRide>(for ride: T,
+                                            searchParameters: SearchParameters = .default,
+                                            completion: @escaping ((_ ride: T, _ routes: [Route]) -> Void)) {
         guard isLocationActive else { return }
         DirectionManager
             .shared
             .loadDirections(for: RideDirections(ride: ride))
             .done { response in
                 var routes = response.routes
-                switch sortCriteria {
+                switch searchParameters.sortCriteria {
                 case .any: ()
-                case .shortestTime: routes.sort(by: { ($0.route?.expectedTravelTime ?? 0) < ($1.route?.expectedTravelTime ?? 0) })
-                case .shortestDistance: routes.sort(by: { ($0.route?.distance ?? 0) < ($1.route?.distance ?? 0) })
+                case .shortestTime: routes.sort(by: { ($0.expectedTravelTime) < ($1.expectedTravelTime) })
+                case .shortestDistance: routes.sort(by: { ($0.distance) < ($1.distance) })
                 }
-                completion(ride, routes)
+                completion(ride,
+                           routes.compactMap({
+                    var route = $0
+                    route.update(metricsBy: searchParameters.updateMetrics)
+                    return route
+                }))
             }
             .catch { _ in
                 completion(ride, [])
