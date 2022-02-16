@@ -175,15 +175,22 @@ public struct PendingPaymentRideData: Codable {
     public var type: RideEndStat
     public var vatValue: Double?
     public var displayValue: String {
-        guard let unwrappedValue = value else { return "" }
-        let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
+        guard var unwrappedValue = value else { return "" }
         var format = "%d"
-        switch (type, hasDigits) {
-        case (.time, _): return String(format: format, Int(unwrappedValue))
-        case (.amount, let hasDigits): format = hasDigits ? "%0.2f" : "%d"
-        case (.distance, let hasDigits): format = hasDigits ? "%0.1f" : "%d"
+        switch (type) {
+        case .time: return String(format: format, Int(unwrappedValue / 60))
+            
+        case .amount:
+            let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
+            format = hasDigits ? "%0.2f" : "%d"
+            return String(format: format, (hasDigits ? unwrappedValue : Int(unwrappedValue)))
+            
+        case .distance:
+            unwrappedValue /= 1000
+            let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) >= 0.1
+            format = hasDigits ? "%0.1f" : "%d"
+            return String(format: format, (hasDigits ? unwrappedValue : Int(unwrappedValue)))
         }
-        return String(format: format, (hasDigits ? unwrappedValue : Int(unwrappedValue)))
     }
     
     public init(value: Double, additionnalValue: Double?, unit: String, type: RideEndStat) {
