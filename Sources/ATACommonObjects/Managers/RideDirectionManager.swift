@@ -67,8 +67,8 @@ public struct Route {
     }
     
     mutating func update(metricsBy metricsUpdate: MetricsUpdate) {
-        expectedTravelTime *= metricsUpdate.timeFactor
-        distance *= metricsUpdate.distanceFactor
+        expectedTravelTime += expectedTravelTime * metricsUpdate.timeFactor
+        distance += distance * metricsUpdate.distanceFactor
     }
 }
 
