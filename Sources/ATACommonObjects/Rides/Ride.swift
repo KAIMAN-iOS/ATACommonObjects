@@ -12,6 +12,7 @@ import DateExtension
 import CodableExtension
 import StringExtension
 import SwiftyUserDefaults
+import DoubleExtension
 
 extension String {
     func bundleLocale() -> String {
@@ -174,22 +175,64 @@ public struct PendingPaymentRideData: Codable {
     public var unit: String?
     public var type: RideEndStat
     public var vatValue: Double?
+    
+    public var displayUnit: String? {
+        switch type {
+        case .amount: return unit ?? "€"
+        case .time: return value?.secondsToLocalizedTime.unit
+        case .distance: return value?.metersToLocalizedDistance().unit
+        }
+    }
+    
     public var displayValue: String {
-        guard var unwrappedValue = value else { return "" }
-        var format = "%d"
         switch (type) {
-        case .time: return String(format: format, Int(unwrappedValue / 60))
-            
-        case .amount:
-            let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
-            format = hasDigits ? "%0.2f" : "%d"
-            return String(format: format, (hasDigits ? unwrappedValue : Int(unwrappedValue)))
+        case .time:
+            return value?.secondsToLocalizedTime.value ?? ""
             
         case .distance:
-            unwrappedValue /= 1000
-            let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) >= 0.1
-            format = hasDigits ? "%0.1f" : "%d"
-            return String(format: format, (hasDigits ? unwrappedValue : Int(unwrappedValue)))
+            let decimal = (value ?? 0) > 10 ? 0 : 1
+            return value?.metersToLocalizedDistance(decimals: decimal).value ?? ""
+            
+        case .amount:
+            guard let unwrappedValue = value else { return "" }
+            let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
+            return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? unwrappedValue : Int(unwrappedValue)))
+        }
+    }
+    public enum DisplayType {
+        case rideEnd, history
+        
+        var valueFont: Font {
+            switch self {
+            case .rideEnd: return .applicationFont(ofSize: 38, weight: .medium)
+            case .history: return .applicationFont(ofSize: 18, weight: .semibold)
+            }
+        }
+        var unitFont: Font {
+            switch self {
+            case .rideEnd: return .applicationFont(ofSize: 24, weight: .medium)
+            case .history: return .applicationFont(ofSize: 12, weight: .semibold)
+            }
+        }
+        var baselineOffset: CGFloat {
+            switch self {
+            case .rideEnd: return 10
+            case .history: return 6
+            }
+        }
+    }
+    
+    public func attributedString(textColor: UIColor,
+                                 displayType: DisplayType = .rideEnd) -> NSAttributedString {
+        return NSAttributedString {
+            AText(displayValue)
+                .foregroundColor(textColor)
+                .font(displayType.valueFont)
+            
+            AText(displayUnit ?? "")
+                .foregroundColor(textColor)
+                .font(displayType.unitFont)
+                .baselineOffset(displayType.baselineOffset)
         }
     }
     
