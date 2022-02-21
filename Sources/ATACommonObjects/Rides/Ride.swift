@@ -189,7 +189,7 @@ public struct PendingPaymentRideData: Codable {
         case .time:
             return value?.secondsToLocalizedTime.value ?? ""
             
-        case .distance:
+        case .distance: 
             let decimal = (value ?? 0) > 10 ? 0 : 1
             return value?.metersToLocalizedDistance(decimals: decimal).value ?? ""
             
