@@ -131,6 +131,7 @@ open class BaseUser: NSObject, Codable {
                 throw PhoneNumberError.invalidCountryCode
             }
             try container.encode(BaseUser.numberKit.format(number, toType: .international), forKey: .phoneNumber)
+            try container.encodeIfPresent(firebaseToken, forKey: .firebaseToken)
         } catch  {
             throw error
         }
@@ -143,6 +144,7 @@ open class BaseUser: NSObject, Codable {
         try? data.encode(lastname)
         try? data.encode(chatId)
         try? data.encode(phoneNumber)
+        try? data.encode(firebaseToken)
         if let imageUrl = imageUrl,
            let url = URL(string: imageUrl),
            url.isFileURL,
