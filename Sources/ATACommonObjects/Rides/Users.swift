@@ -35,7 +35,7 @@ open class BaseUser: NSObject, Codable {
         }
     }
     private enum CodingKeys: String, CodingKey {
-            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL, image, countryCode
+            case id, firstname, lastname, phoneNumber, imageUrl, chatId, imageURL, image, countryCode, firebaseToken
         }
     
     public var hasValidNumber: Bool {
@@ -67,6 +67,7 @@ open class BaseUser: NSObject, Codable {
             let _ = try? ImageManager.save(image, imagePath: "user-\(id)")
         }
     }
+    public var firebaseToken: String?
     
     public override init() {
     }
@@ -108,6 +109,7 @@ open class BaseUser: NSObject, Codable {
             }
             phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
             handleUserPicture()
+            firebaseToken = try container.decodeIfPresent(String.self, forKey: .firebaseToken)
         } catch  {
             throw error
         }
