@@ -157,9 +157,14 @@ public class Payment: NSObject, Codable {
     }
     
     required public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        vatValue = try container.decodeIfPresent(Double.self, forKey: .vatValue)
-        stats = try container.decode([PendingPaymentRideData].self, forKey: .stats)
+        do {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            vatValue = try container.decodeIfPresent(Double.self, forKey: .vatValue)
+            stats = try container.decode([PendingPaymentRideData].self, forKey: .stats)
+            print(stats)
+        } catch {
+            throw error
+        }
     }
     
     public func encode(to encoder: Encoder) throws {
