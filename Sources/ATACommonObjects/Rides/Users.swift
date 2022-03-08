@@ -68,6 +68,8 @@ open class BaseUser: NSObject, Codable {
         }
     }
     public var firebaseToken: String?
+    /// is set to true, all objects will check if the phone is valid. Otherwise, it will use a blank number instead
+    public static var checkPhone: Bool = true
     
     public override init() {
     }
@@ -104,10 +106,15 @@ open class BaseUser: NSObject, Codable {
             }
             
             countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode) ?? (Locale.current.regionCode ?? "FR")
-            guard let nb = try? BaseUser.numberKit.parse(internationalNumber) else {
-                throw PhoneNumberError.notANumber
+            if BaseUser.checkPhone {
+                guard let nb = try? BaseUser.numberKit.parse(internationalNumber) else {
+                    throw PhoneNumberError.notANumber
+                }
+                phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
+            } else {
+                let nb = try? BaseUser.numberKit.parse(internationalNumber)
+                phoneNumber = nb == nil ? "" : BaseUser.numberKit.format(nb!, toType: .national)
             }
-            phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
             handleUserPicture()
             firebaseToken = try container.decodeIfPresent(String.self, forKey: .firebaseToken)
         } catch  {
