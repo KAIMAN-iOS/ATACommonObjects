@@ -112,7 +112,7 @@ public class SearchOptions: NSObject, Codable {
     public var reference: String?
     static var `default` = SearchOptions()
     
-    override init() {}
+    public override init() {}
     
     enum CodingKeys: String, CodingKey {
         case vehicleOptions, vehicleType, memo, reference
@@ -606,7 +606,12 @@ public class RideProposal: NSObject, Codable, RideContainable {
     }
 }
 
-public class OngoingRide: Codable, RideContainable, Defaults.Serializable  {
+public struct MyBridge<Value: Codable>: DefaultsCodableBridge {}
+extension OngoingRide: Defaults.Serializable {
+    public static var bridge = MyBridge<OngoingRide>()
+}
+
+public class OngoingRide: Codable, RideContainable  {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
@@ -621,7 +626,11 @@ public class OngoingRide: Codable, RideContainable, Defaults.Serializable  {
         case driver
     }
     
-    public init(vehicle: BaseVehicle? = nil, ride: BaseRide, passenger: BasePassenger? = nil, driver: BaseDriver? = nil, options: SearchOptions) {
+    public init(vehicle: BaseVehicle? = nil,
+                ride: BaseRide,
+                passenger: BasePassenger? = nil,
+                driver: BaseDriver? = nil,
+                options: SearchOptions = SearchOptions()) {
         self.vehicle = vehicle
         self.ride = ride
         self.passenger = passenger
