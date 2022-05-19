@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Alamofire/Alamofire",
         "state": {
           "branch": null,
-          "revision": "f96b619bcb2383b43d898402283924b80e2c4bae",
-          "version": "5.4.3"
+          "revision": "354dda32d89fc8cd4f5c46487f64957d355f53d8",
+          "version": "5.6.1"
         }
       },
       {
@@ -24,8 +24,17 @@
         "repositoryURL": "https://github.com/KAIMAN-iOS/ATAConfiguration",
         "state": {
           "branch": "master",
-          "revision": "bee5d53f06f15f9a7c036bc7ed29e504eb230c35",
+          "revision": "aa7a5616b132fa09f5b7f3899b8f35a8a978c88e",
           "version": null
+        }
+      },
+      {
+        "package": "Defaults",
+        "repositoryURL": "https://github.com/sindresorhus/Defaults",
+        "state": {
+          "branch": null,
+          "revision": "119f654d44f7b90f00dc11f7dd1c94a36f12576b",
+          "version": "6.2.1"
         }
       },
       {
@@ -33,7 +42,7 @@
         "repositoryURL": "https://github.com/KAIMAN-iOS/KExtensions",
         "state": {
           "branch": "master",
-          "revision": "629b5a7cc44c0d37e0b96db01371cc87965f57c2",
+          "revision": "b9cc59c38009fa5e9e97b8cd0822185c5ab6cd3d",
           "version": null
         }
       },
@@ -78,8 +87,8 @@
         "repositoryURL": "https://github.com/mxcl/PromiseKit",
         "state": {
           "branch": null,
-          "revision": "d2f7ba14bcdc45e18f4f60ad9df883fb9055f081",
-          "version": "6.15.3"
+          "revision": "c946b7561fbe11379a874e59faa2c5f8077ae0e1",
+          "version": "6.17.1"
         }
       },
       {
@@ -87,8 +96,8 @@
         "repositoryURL": "https://github.com/SnapKit/SnapKit",
         "state": {
           "branch": null,
-          "revision": "d458564516e5676af9c70b4f4b2a9178294f1bc6",
-          "version": "5.0.1"
+          "revision": "f222cbdf325885926566172f6f5f06af95473158",
+          "version": "5.6.0"
         }
       },
       {
@@ -98,15 +107,6 @@
           "branch": null,
           "revision": "f8ec8e97095eb3a5312370ad94b921768217625f",
           "version": "5.1.0"
-        }
-      },
-      {
-        "package": "SwiftyUserDefaults",
-        "repositoryURL": "https://github.com/sunshinejr/SwiftyUserDefaults",
-        "state": {
-          "branch": null,
-          "revision": "f66bcd04088582c8fbb5cb8554d577e303bae396",
-          "version": "5.3.0"
         }
       }
     ]

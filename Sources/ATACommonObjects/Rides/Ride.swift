@@ -11,8 +11,8 @@ import NSAttributedStringBuilder
 import DateExtension
 import CodableExtension
 import StringExtension
-import SwiftyUserDefaults
 import DoubleExtension
+import Defaults
 
 extension String {
     func bundleLocale() -> String {
@@ -606,7 +606,7 @@ public class RideProposal: NSObject, Codable, RideContainable {
     }
 }
 
-public class OngoingRide: Codable, RideContainable, DefaultsSerializable  {
+public class OngoingRide: Codable, RideContainable, Defaults.Serializable  {
     public var vehicle: BaseVehicle!
     public var ride: BaseRide
     public var passenger: BasePassenger?
