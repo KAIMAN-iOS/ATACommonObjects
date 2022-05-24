@@ -469,8 +469,8 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
     public var next: RideState? {
         switch self {
         case .pending: return nil
-        case .booked: return .started
-        case .started: return .approach
+        case .booked: return .approach
+        case .started: return .pickUpPassenger
         case .approach: return .pickUpPassenger
         case .delayed: return .pendingPayment
         case .waiting: return .pendingPayment
