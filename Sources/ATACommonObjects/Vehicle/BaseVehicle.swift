@@ -29,7 +29,7 @@ open class BaseVehicle: Codable, Hashable {
     public var brand: VehicleBrand? = VehicleBrand.allCases.first
     public var model: String
     public var vehicleType: VehicleType? = VehicleType.allCases.first
-    public var vehicleClass: String = ""
+    public var vehicleClass: Int?
     public var color: VehicleColor? = VehicleColor.allCases.first
     public var plate: String
     public var numberOfSeats: Int = 4
@@ -88,7 +88,7 @@ open class BaseVehicle: Codable, Hashable {
         let vehicleType = try container.decode(Int.self, forKey: .vehicleType)
         self.vehicleType = VehicleType.from(rawValue: vehicleType)
         plate = try container.decode(String.self, forKey: .plate)
-        vehicleClass = try container.decode(String.self, forKey: .vehicleClass)
+        vehicleClass = try container.decodeIfPresent(Int.self, forKey: .vehicleClass)
         numberOfSeats = try container.decode(Int.self, forKey: .numberOfSeats)
         activeOptions = try container.decodeIfPresent([VehicleOption].self, forKey: .activeOptions) ?? []
         isValidated = try container.decodeIfPresent(Bool.self, forKey: .isValidated) ?? false
