@@ -29,6 +29,7 @@ open class BaseVehicle: Codable, Hashable {
     public var brand: VehicleBrand? = VehicleBrand.allCases.first
     public var model: String
     public var vehicleType: VehicleType? = VehicleType.allCases.first
+    public var vehicleClass: String = ""
     public var color: VehicleColor? = VehicleColor.allCases.first
     public var plate: String
     public var numberOfSeats: Int = 4
@@ -66,7 +67,7 @@ open class BaseVehicle: Codable, Hashable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, brand, model, vehicleType, color, plate, numberOfSeats, activeOptions, isValidated
+        case id, brand, model, vehicleType, color, plate, numberOfSeats, activeOptions, isValidated, vehicleClass
     }
     
     public required init(from decoder: Decoder) throws {
@@ -87,6 +88,7 @@ open class BaseVehicle: Codable, Hashable {
         let vehicleType = try container.decode(Int.self, forKey: .vehicleType)
         self.vehicleType = VehicleType.from(rawValue: vehicleType)
         plate = try container.decode(String.self, forKey: .plate)
+        vehicleClass = try container.decode(String.self, forKey: .vehicleClass)
         numberOfSeats = try container.decode(Int.self, forKey: .numberOfSeats)
         activeOptions = try container.decodeIfPresent([VehicleOption].self, forKey: .activeOptions) ?? []
         isValidated = try container.decodeIfPresent(Bool.self, forKey: .isValidated) ?? false
@@ -99,6 +101,7 @@ open class BaseVehicle: Codable, Hashable {
         try container.encode(model, forKey: .model)
         try container.encode(color, forKey: .color)
         try container.encode(vehicleType, forKey: .vehicleType)
+        try container.encode(vehicleClass, forKey: .vehicleClass)
         try container.encode(plate, forKey: .plate)
         try container.encode(numberOfSeats, forKey: .numberOfSeats)
         try container.encode(activeOptions, forKey: .activeOptions)
@@ -114,6 +117,7 @@ open class BaseVehicle: Codable, Hashable {
         try? data.encode(color, for: "color")
         try? data.encode(vehicleType, for: "vehicleType")
         try? data.encode(plate, for: "plate")
+        try? data.encode(vehicleClass, for: "vehicleClass")
         try? data.encode(isMedical, for: "isMedical")
         try? data.encode(numberOfSeats, for: "numberOfSeats")
         return data
