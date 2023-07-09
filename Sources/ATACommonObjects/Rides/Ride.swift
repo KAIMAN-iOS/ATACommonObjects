@@ -100,7 +100,7 @@ open class Address: NSObject, Codable {
         hasher.combine(coordinates)
         hasher.combine(name)
         hasher.combine(address)
-//        hasher.combine(id)
+        //        hasher.combine(id)
         return hasher.finalize()
     }
 }
@@ -180,28 +180,30 @@ public struct PendingPaymentRideData: Codable {
     public var unit: String?
     public var type: RideEndStat
     public var vatValue: Double?
+    // will be set inside apps to handle the currency route
+    public static var defaultAmountUnit = "€"
     
     public var displayUnit: String? {
         switch type {
-        case .amount: return unit ?? "€"
-        case .time: return value?.secondsToLocalizedTime.unit
-        case .distance: return value?.metersToLocalizedDistance().unit
+            case .amount: return (unit?.isEmpty ?? true) ? PendingPaymentRideData.defaultAmountUnit : unit
+            case .time: return value?.secondsToLocalizedTime.unit
+            case .distance: return value?.metersToLocalizedDistance().unit
         }
     }
     
     public var displayValue: String {
         switch (type) {
-        case .time:
-            return value?.secondsToLocalizedTime.value ?? ""
-            
-        case .distance: 
-            let decimal = (value ?? 0) > 10 ? 0 : 1
-            return value?.metersToLocalizedDistance(decimals: decimal).value ?? ""
-            
-        case .amount:
-            guard let unwrappedValue = value else { return "" }
-            let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
-            return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? unwrappedValue : Int(unwrappedValue)))
+            case .time:
+                return value?.secondsToLocalizedTime.value ?? ""
+                
+            case .distance:
+                let decimal = (value ?? 0) > 10 ? 0 : 1
+                return value?.metersToLocalizedDistance(decimals: decimal).value ?? ""
+                
+            case .amount:
+                guard let unwrappedValue = value else { return "" }
+                let hasDigits = unwrappedValue - Double(Int(unwrappedValue)) > 0
+                return String(format: hasDigits ? "%0.2f" : "%d", (hasDigits ? unwrappedValue : Int(unwrappedValue)))
         }
     }
     public enum DisplayType {
@@ -209,20 +211,20 @@ public struct PendingPaymentRideData: Codable {
         
         var valueFont: Font {
             switch self {
-            case .rideEnd: return .applicationFont(ofSize: 38, weight: .medium)
-            case .history: return .applicationFont(ofSize: 18, weight: .semibold)
+                case .rideEnd: return .applicationFont(ofSize: 38, weight: .medium)
+                case .history: return .applicationFont(ofSize: 18, weight: .semibold)
             }
         }
         var unitFont: Font {
             switch self {
-            case .rideEnd: return .applicationFont(ofSize: 24, weight: .medium)
-            case .history: return .applicationFont(ofSize: 12, weight: .semibold)
+                case .rideEnd: return .applicationFont(ofSize: 24, weight: .medium)
+                case .history: return .applicationFont(ofSize: 12, weight: .semibold)
             }
         }
         var baselineOffset: CGFloat {
             switch self {
-            case .rideEnd: return 10
-            case .history: return 6
+                case .rideEnd: return 10
+                case .history: return 6
             }
         }
     }
@@ -254,16 +256,16 @@ public enum RideEndStat: Int, Codable {
     
     public var title: String {
         switch self {
-        case .amount: return "amount stat".bundleLocale()
-        case .distance: return "distance stat".bundleLocale()
-        case .time: return "time stat".bundleLocale()
+            case .amount: return "amount stat".bundleLocale()
+            case .distance: return "distance stat".bundleLocale()
+            case .time: return "time stat".bundleLocale()
         }
     }
     public var defaultUnit: String {
         switch self {
-        case .amount: return Locale.current.currencySymbol ?? "€"
-        case .distance: return "km"
-        case .time: return "min"
+            case .amount: return PendingPaymentRideData.defaultAmountUnit
+            case .distance: return "km"
+            case .time: return "min"
         }
     }
 }
@@ -290,11 +292,11 @@ public class Proposal: NSObject, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         saveForMe = try container.decode(Bool.self, forKey: .saveForMe)
         // TODO: A supprimer quand jules aura changer le type de Int en String
-//        guard (try? container.decode([String]?.self, forKey: .shareGroups)) != nil else {
-//            shareGroupsInt = try container.decode([Int].self, forKey: .shareGroups)
-//            shareGroups = shareGroupsInt.toStringArray()
-//            return
-//        }
+        //        guard (try? container.decode([String]?.self, forKey: .shareGroups)) != nil else {
+        //            shareGroupsInt = try container.decode([Int].self, forKey: .shareGroups)
+        //            shareGroups = shareGroupsInt.toStringArray()
+        //            return
+        //        }
         shareGroups = try container.decode([Int].self, forKey: .shareGroups)
     }
     
@@ -321,10 +323,10 @@ public enum RideOrigin: Int, Codable {
     
     public var displayText: String {
         switch self {
-        case .booker: return "booker display".bundleLocale().uppercased()
-        case .apps: return "apps display".bundleLocale().uppercased()
-        case .letaxi: return "letaxi display".bundleLocale().uppercased()
-        case .driverApp: return "driver app display".bundleLocale().uppercased()
+            case .booker: return "booker display".bundleLocale().uppercased()
+            case .apps: return "apps display".bundleLocale().uppercased()
+            case .letaxi: return "letaxi display".bundleLocale().uppercased()
+            case .driverApp: return "driver app display".bundleLocale().uppercased()
         }
     }
 }
@@ -356,14 +358,14 @@ open class BaseRide: NSObject, Codable {
     static var `default` = BaseRide()
     
     public convenience init(id: Int,
-                date: Date,
-                isImmediate: Bool,
-                fromAddress: Address,
-                toAddress: Address?,
-                origin: RideOrigin = .apps,
-                state: RideState = .pending,
-                numberOfPassengers: Int,
-                numberOfLuggages: Int) {
+                            date: Date,
+                            isImmediate: Bool,
+                            fromAddress: Address,
+                            toAddress: Address?,
+                            origin: RideOrigin = .apps,
+                            state: RideState = .pending,
+                            numberOfPassengers: Int,
+                            numberOfLuggages: Int) {
         self.init()
         self.id = id
         self.startDate = CustomDate<GMTISODateFormatterDecodable>(date: date)
@@ -431,54 +433,54 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
     
     public var displayText: String? {
         switch self {
-        case .started: return "ride state started".bundleLocale()
-        case .approach: return "ride state approach".bundleLocale()
-        case .pickUpPassenger: return "ride state pickUpPassenger".bundleLocale()
-        case .ended: return "ride state ended".bundleLocale()
-        case .cancelled: return "ride state cancelled".bundleLocale()
-        case .booked: return "ride state booked".bundleLocale()
-        case .pending: return "ride state pending".bundleLocale()
-        case .marketPlace: return "ride state marketPlace".bundleLocale()
-        default: return nil
+            case .started: return "ride state started".bundleLocale()
+            case .approach: return "ride state approach".bundleLocale()
+            case .pickUpPassenger: return "ride state pickUpPassenger".bundleLocale()
+            case .ended: return "ride state ended".bundleLocale()
+            case .cancelled: return "ride state cancelled".bundleLocale()
+            case .booked: return "ride state booked".bundleLocale()
+            case .pending: return "ride state pending".bundleLocale()
+            case .marketPlace: return "ride state marketPlace".bundleLocale()
+            default: return nil
         }
     }
     
     public var displayCellText: String? {
         switch self {
-        case .started: return "ride state started".bundleLocale()
-        case .approach: return "ride state approach".bundleLocale()
-        case .pickUpPassenger: return "ride state pickUpPassenger".bundleLocale()
-        case .ended: return "cell ride state ended".bundleLocale()
-        case .cancelled: return "cell ride state cancelled".bundleLocale()
-        case .booked: return "ride state booked".bundleLocale()
-        case .pending: return "ride state pending".bundleLocale()
-        case .marketPlace: return "ride state marketPlace".bundleLocale()
-        default: return nil
+            case .started: return "ride state started".bundleLocale()
+            case .approach: return "ride state approach".bundleLocale()
+            case .pickUpPassenger: return "ride state pickUpPassenger".bundleLocale()
+            case .ended: return "cell ride state ended".bundleLocale()
+            case .cancelled: return "cell ride state cancelled".bundleLocale()
+            case .booked: return "ride state booked".bundleLocale()
+            case .pending: return "ride state pending".bundleLocale()
+            case .marketPlace: return "ride state marketPlace".bundleLocale()
+            default: return nil
         }
     }
-
+    
     public var subtitle: String? {
         switch self {
-        case .ended: return "ride state ended".bundleLocale()
-        case .cancelled: return "ride state cancelled".bundleLocale()
-        case .booked: return "ride state booked".bundleLocale()
-        default: return nil
+            case .ended: return "ride state ended".bundleLocale()
+            case .cancelled: return "ride state cancelled".bundleLocale()
+            case .booked: return "ride state booked".bundleLocale()
+            default: return nil
         }
     }
     
     public var next: RideState? {
         switch self {
-        case .pending: return nil
-        case .booked: return .approach
-        case .started: return .pickUpPassenger
-        case .approach: return .pickUpPassenger
-        case .delayed: return .pendingPayment
-        case .waiting: return .pendingPayment
-        case .pickUpPassenger: return .pendingPayment
-        case .pendingPayment: return .ended
-        case .ended: return nil
-        case .cancelled: return nil
-        case .marketPlace: return nil
+            case .pending: return nil
+            case .booked: return .approach
+            case .started: return .pickUpPassenger
+            case .approach: return .pickUpPassenger
+            case .delayed: return .pendingPayment
+            case .waiting: return .pendingPayment
+            case .pickUpPassenger: return .pendingPayment
+            case .pendingPayment: return .ended
+            case .ended: return nil
+            case .cancelled: return nil
+            case .marketPlace: return nil
         }
     }
 }
@@ -492,9 +494,9 @@ public enum DisplayMode {
     
     var hideUserIcon: Bool {
         switch self {
-        case .driver: return true
-        case .passenger: return false
-        case .business: return false
+            case .driver: return true
+            case .passenger: return false
+            case .business: return false
         }
     }
 }
@@ -556,11 +558,11 @@ open class CreatedRide: Codable, RideContainable {
         proposal = try container.decode(Proposal.self, forKey: .proposal)
     }
     
-//    public init(passenger: BasePassenger? = nil) {
-//        ride = BaseRide.default
-//        options = SearchOptions.default
-//        self.passenger = passenger ?? BasePassenger.default
-//    }
+    //    public init(passenger: BasePassenger? = nil) {
+    //        ride = BaseRide.default
+    //        options = SearchOptions.default
+    //        self.passenger = passenger ?? BasePassenger.default
+    //    }
 }
 
 // MARK: - New Ride
@@ -678,8 +680,8 @@ public class RideHistoryModel: Codable, RideContainable {
     public var pickUpAddress: Address?
     public var priceDisplay: String? {
         guard let amount = payment.stats.filter({ $0.type == .amount }).first,
-                amount.displayValue.isEmpty == false,
-                amount.unit?.isEmpty == false else { return nil }
+              amount.displayValue.isEmpty == false,
+              amount.unit?.isEmpty == false else { return nil }
         return "\(amount.displayValue) \(amount.unit ?? amount.type.defaultUnit)"
     }
     
