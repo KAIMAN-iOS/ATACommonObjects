@@ -108,7 +108,7 @@ open class BaseUser: NSObject, Codable {
             countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode) ?? (Locale.current.regionCode ?? "FR")
             if BaseUser.checkPhone {
                 guard let nb = try? BaseUser.numberKit.parse(internationalNumber) else {
-                    throw PhoneNumberError.notANumber
+                    throw PhoneNumberError.invalidNumber
                 }
                 phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
             } else {
