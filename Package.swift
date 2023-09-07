@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/ethanhuang13/NSAttributedStringBuilder", from: "0.3.0"),
         .package(url: "https://github.com/KAIMAN-iOS/KStorage", .branch("master")),
         .package(url: "https://github.com/malcommac/SwiftLocation", from: "5.1.0"),
-        .package(url: "https://github.com/KAIMAN-iOS/PhoneNumberKit", from: "4.0.0"),
+        .package(url: "https://github.com/KAIMAN-iOS/PhoneNumberKit", .branch("master")),
         .package(url: "https://github.com/sindresorhus/Defaults", from: "6.0.0"),
     ],
     targets: [
