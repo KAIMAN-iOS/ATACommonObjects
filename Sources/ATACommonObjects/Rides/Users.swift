@@ -21,13 +21,13 @@ open class BaseUser: NSObject, Codable {
         return formatter
     }
     
-    public var formartedNumber: String? {
-        return BaseUser.numberFormatter.string(for: number)
-    }
-    
-    public var number: PhoneNumber? {
-        return try? BaseUser.numberKit.parse(phoneNumber)
-    }
+//    public var formartedNumber: String? {
+//        return BaseUser.numberFormatter.string(for: number)
+//    }
+//    
+//    public var number: PhoneNumber? {
+//        return try? BaseUser.numberKit.parse(phoneNumber)
+//    }
     
     public var countryCode: String = "FR" {
         didSet {
@@ -43,14 +43,14 @@ open class BaseUser: NSObject, Codable {
     }
     public var internationalPhone: String {
         guard let internationalCode = BaseUser.numberKit.countryCode(for: countryCode),
-            let nummber = try? BaseUser.numberKit.parse("\(internationalCode)\(phoneNumber)") else { return phoneNumber }
+            let nummber = try? BaseUser.numberKit.parse("+\(internationalCode)\(phoneNumber)") else { return phoneNumber }
         return BaseUser.numberKit.format(nummber, toType: .e164)
     }
     public var id: Int = UUID().uuidString.hash
     public var firstname: String = ""
     public var lastname: String = ""
     public var fullname: String { firstname + " " + lastname }
-    // phone number with natinal format
+    // phone number with national format
     public var phoneNumber: String = ""
     public var chatId: String = ""
     public var displayName: String { firstname + " " + lastname }
@@ -97,28 +97,50 @@ open class BaseUser: NSObject, Codable {
             super.init()
             //optional
             // retrieve an internation string ans split it to countryCode and national number
-            let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
-            guard internationalNumber.isEmpty == false else {
-                countryCode = Locale.current.regionCode ?? "fr"
-                phoneNumber = ""
-                handleUserPicture()
-                return
-            }
-            
-            countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode) ?? (Locale.current.regionCode ?? "FR")
-            if BaseUser.checkPhone {
-                guard let nb = try? BaseUser.numberKit.parse(internationalNumber) else {
-                    throw PhoneNumberError.invalidNumber
-                }
-                phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
-            } else {
-                let nb = try? BaseUser.numberKit.parse(internationalNumber)
-                phoneNumber = nb == nil ? "" : BaseUser.numberKit.format(nb!, toType: .national)
-            }
+            try extractNumber(from: container)
             handleUserPicture()
             firebaseToken = try container.decodeIfPresent(String.self, forKey: .firebaseToken)
         } catch  {
             throw error
+        }
+    }
+    
+    private func extractNumber(from container: KeyedDecodingContainer<BaseUser.CodingKeys>) throws {
+        let internationalNumber: String = try container.decodeIfPresent(String.self, forKey: .phoneNumber) ?? ""
+        guard internationalNumber.isEmpty == false else {
+            countryCode = Locale.current.regionCode ?? "fr"
+            phoneNumber = ""
+            handleUserPicture()
+            return
+        }
+        
+        countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode) ?? (Locale.current.regionCode ?? "FR")
+        // try to parse it as it is
+        var nb = try? BaseUser.numberKit.parse(internationalNumber)
+        if let nb {
+            phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
+            return
+        }
+        let code = BaseUser.numberKit.countryCode(for: countryCode) ?? 33
+        nb = try? BaseUser.numberKit.parse("\(code)\(internationalNumber)")
+        if let nb {
+            phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
+            return
+        }
+        nb = try? BaseUser.numberKit.parse("+\(internationalNumber)")
+        if let nb {
+            phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
+            return
+        }
+        nb = try? BaseUser.numberKit.parse("+\(code)\(internationalNumber)")
+        if let nb {
+            phoneNumber = BaseUser.numberKit.format(nb, toType: .national)
+            return
+        }
+        if BaseUser.checkPhone {
+            throw PhoneNumberError.invalidNumber
+        } else {
+            phoneNumber = nb == nil ? "" : BaseUser.numberKit.format(nb!, toType: .national)
         }
     }
     
