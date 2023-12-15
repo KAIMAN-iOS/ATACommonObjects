@@ -474,8 +474,8 @@ public enum RideState: Int, Codable, CaseIterable, Comparable {
             case .booked: return .approach
             case .started: return .pickUpPassenger
             case .approach: return .pickUpPassenger
-            case .delayed: return .pendingPayment
-            case .waiting: return .pendingPayment
+            case .delayed: return .pickUpPassenger
+            case .waiting: return .pickUpPassenger
             case .pickUpPassenger: return .pendingPayment
             case .pendingPayment: return .ended
             case .ended: return nil
